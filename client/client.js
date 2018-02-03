@@ -1,9 +1,16 @@
+//events
 const socket = io();
+socket.on('helloworld', (data)=>helloworld(data));
 
-socket.on('helloworld', (data)=>loadshit(data));
+function helloworld(data){
+	document.getElementById('Main').innerHTML = data;
+}
 
-function loadshit(data){
-	let p = document.createElement("p");
-	document.body.appendChild(p);
-	p.innerHTML = `${data}`;
+//onload
+document.addEventListener('DOMContentLoaded', rendermain);
+
+function rendermain(){
+	let div = document.createElement("div");
+	document.body.appendChild(div);
+	div.id = 'Main';
 }
