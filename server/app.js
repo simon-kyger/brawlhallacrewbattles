@@ -16,6 +16,6 @@ io.sockets.on('connection', socket =>{
 });
 
 function init(socket){
-	const msg = `we're connected`;
+	const msg = `Welcome to Robs Brawlhalla Page`;
 	socket.emit('helloworld', msg);
 }
