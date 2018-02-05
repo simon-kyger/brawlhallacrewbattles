@@ -4,6 +4,9 @@ const socket = io();
 const rendermain = () => {
 	document.body.style.margin = 0;
 	document.body.style.background = `black`;
+	document.body.style.color = `white`;
+	document.body.style.fontSize = `40`;
+	document.body.style.overflow = `hidden`;
 	let div = document.createElement(`div`);
 	document.body.appendChild(div);
 	div.id = `main`;
@@ -18,21 +21,33 @@ const renderlogin = (arg) => {
 	div.style.width = `100%`;
 	div.style.height = `100%`;
 	div.innerHTML = `
-		<div id='outer' style='position: relative; top: 20%; left: 40%; font-family: junction;'>
-			<img id='logo' src='img/blogotop.png'>
-			<div id='loginheader' style='color: orange; width: 400; text-align: center; font-size: 40; padding-bottom: 20;'>CREWS</div>
-			<div id='inner' style='background: orange; width: 400; height: 200; text-align: center;'>
+		<div id='outer' class='container' style='margin-left: 750;'>
+			<img src='img/blogotop.png' style='padding-top: 50'>
+			<div id='loginheader' class='list-group' style='color: orange; width: 400; text-align: center; padding-bottom: 100;'>CREWS</div>
+			<div id='inner' style='font-size: 20; width: 400; height: 200; text-align: center;'>
 				<div id='success'></div>
 				<form id='login' style='margin: 0; padding-top: 24'>
 					<div>Username: </div>
-					<input id='username'></input>
+					<input id='username' style='color: black;'></input>
 					<div style='padding-top:10;'>Password: </div>
-					<input id='password'></input>
+					<input id='password' style='color: black;'></input>
 				</form>
-				<div style='padding-top: 30; padding-left: 100; text-align: left; width: 50%;'>
-					<a id='loginlink' href='#'>Login</a>
-					<a id='registerlink' href='#' style='float: right;'>Register</a>
+				<div style='text-align: left;'>
+					<a id='loginlink' href='#' style='margin-left: 80;'>Login</a>
+					<a id='registerlink' href='#' style='margin-left: 124;'>Register</a>
 				</div>
+			</div>
+		</div>
+		<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray;'>
+			<div>
+				Powered with:
+				<a href='https://nodejs.org/en/' target='_blank'><img src='img/node.png' width='40' height='20'></a>
+				<a href='https://www.mongodb.com/ target='_blank'><img src='img/mongo.png' width='80' height='20' style='position: relative; bottom:4;'></a>
+			</div>
+			<div>
+				Fork me on 
+				<a href='https://www.github.com' target='_blank'><img src='img/github.png' width='20' height='20'></a>
+				<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>: https://github.com/simon-kyger/brawlhallacrewbattle</a>
 			</div>
 		</div>
 	`;
@@ -95,12 +110,63 @@ const gamespage = data => {
 	div.style.width = `100%`;
 	div.style.height = `100%`;
 	div.innerHTML = `
-		<div id='outer' style='position: relative; top: 20%; left: 40%; font-family: junction;'>
+		<div id='loggedin' style='font-size: 20;'>
+			Welcome back ${data.username}
+		</div>
+		<div id='outer' style='position: relative; left: 40%; font-family: junction;'>
 			<img id='logo' src='img/blogotop.png'>
-			<div id='loginheader' style='color: orange; width: 400; text-align: center; font-size: 40; padding-bottom: 20;'>CREWS</div>
-			<div id='inner' style='background: orange; width: 400; height: 200; text-align: center;'>
-				Successfully logged in as: ${data.username}
+			<div id='loginheader' style='color: orange; width: 400; text-align: center; font-size: 40; padding-bottom: 80;'>CREWS</div>
+		</div>
+		<div id='content' class='container' style='position: relative; left: 30%; width: 750; display: inline-block;'>
+			<div style='padding-left: 220;'>
+				Active
+			</div>
+			<ul id='createjoin' class='list-group' style='float:left; margin-bottom: 0;'>
+				<li id='creategame' class='list-group-item' style='color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;'>
+					Create
+				</li>
+				<li id='joingame' class='list-group-item' style='color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;'>
+					Join
+				</li>
+			</ul>
+			<form>
+				<select id='games' size='8' style='width: 500; height: 400; float: right; font-size:20; background-color: black;'>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Rob's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Simon's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Jeremy's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Hell yes's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Steve's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>Some random dude with a really obnoxiously long name's game</option>
+					<option class='list-group-item' style='white-space:pre-wrap; color: white; background-color: black;'>etc</option>
+				</select>
+			</form>
+		</div>
+		<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray;'>
+			<div>
+				Powered with:
+				<a href='https://nodejs.org/en/' target='_blank'><img src='img/node.png' width='40' height='20'></a>
+				<a href='https://www.mongodb.com/ target='_blank'><img src='img/mongo.png' width='80' height='20' style='position: relative; bottom:4;'></a>
+			</div>
+			<div>
+				Fork me on 
+				<a href='https://www.github.com' target='_blank'><img src='img/github.png' width='20' height='20'></a>
+				<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>: https://github.com/simon-kyger/brawlhallacrewbattle</a>
 			</div>
 		</div>
 	`;
+	document.getElementById('creategame').addEventListener('click', e=>{
+		creategame();
+	});
+	document.getElementById('joingame').addEventListener('click', e=>{
+		const selectedgame = document.getElementById('games').options[e.selectedIndex].value;
+		joingame(selectedgame);
+	});
+}
+
+const creategame = () => {
+
+}
+
+const joingame = game => {
+
 }
