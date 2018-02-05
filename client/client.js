@@ -21,7 +21,7 @@ const renderlogin = (arg) => {
 	div.style.width = `100%`;
 	div.style.height = `100%`;
 	div.innerHTML = `
-		<div id='outer' class='container' style='margin-left: 750;'>
+		<div id='outer' class='container' align='center'>
 			<img src='img/blogotop.png' style='padding-top: 50'>
 			<div id='loginheader' class='list-group' style='color: orange; width: 400; text-align: center; padding-bottom: 100;'>CREWS</div>
 			<div id='inner' style='font-size: 20; width: 400; height: 200; text-align: center;'>
@@ -113,12 +113,12 @@ const gamespage = data => {
 		<div id='loggedin' style='font-size: 20;'>
 			Welcome back ${data.username}
 		</div>
-		<div id='outer' style='position: relative; left: 40%; font-family: junction;'>
+		<div id='outer' align='center'>
 			<img id='logo' src='img/blogotop.png'>
 			<div id='loginheader' style='color: orange; width: 400; text-align: center; font-size: 40; padding-bottom: 80;'>CREWS</div>
 		</div>
-		<div id='content' class='container' style='position: relative; left: 30%; width: 750; display: inline-block;'>
-			<div style='padding-left: 220;'>
+		<div id='content' class='container' align='center' style='width: 750;'>
+			<div style='width: 38%; text-align: left;'>
 				Active
 			</div>
 			<ul id='createjoin' class='list-group' style='float:left; margin-bottom: 0;'>
