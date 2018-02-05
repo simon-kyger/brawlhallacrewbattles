@@ -35,5 +35,5 @@ npm start
 Verify the server echos back: 
 ```
 Server listening on port: 8080 
-Mongodb is listening on port: 270172
+Mongodb is listening on port: 27017
 ```
