@@ -4,7 +4,7 @@
   "description": "project for rob",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/simon-kyger/brawlhallacrewbattle#readme",
   "dependencies": {
+    "md5": "^2.2.1",
+    "mongo-sanitize": "^1.0.0",
+    "mongodb": "^3.0.2",
+    "mongoose": "^5.0.3",
     "path": "^0.12.7",
     "socket.io": "^2.0.4"
   }
