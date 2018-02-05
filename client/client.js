@@ -30,7 +30,7 @@ const renderlogin = (arg) => {
 					<div>Username: </div>
 					<input id='username' style='color: black;'></input>
 					<div style='padding-top:10;'>Password: </div>
-					<input id='password' style='color: black;'></input>
+					<input id='password' type='password' style='color: black;'></input>
 				</form>
 				<div style='text-align: left;'>
 					<a id='loginlink' href='#' style='margin-left: 80;'>Login</a>
