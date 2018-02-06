@@ -10,15 +10,15 @@ const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
 const dbport = process.env.DBPORT || 27017;
-let usersessions = {};
+let sessions = {};
+let games = {};
 
 app.use('/', express.static(path.join(__dirname, '../client')));
 server.listen(serverport);
 console.log(`Server listening on port: ${serverport}`);
 
 mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
-	if (err)
-		throw err;
+	if (err) throw err;
 
 	console.log(`Mongodb is listening on port: ${dbport}`);
 
@@ -27,11 +27,39 @@ mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
 		init(socket);
 		socket.on('login', (data)=>login(socket, db, data));
 		socket.on('register', (data)=>register(socket, db, data));
+		socket.on('disconnect', ()=>disconnect(socket));
+		socket.on('getgames', ()=>getgames(socket));
+		socket.on('creategame', ()=>creategame(socket));
 	});
 });
 
 const init = socket =>{
 	//
+}
+
+const creategame = socket => {
+	let username;
+	for (let users in sessions){
+		if(sessions[users] == socket){
+			username = users;
+		}
+	}
+	games[username] = {};
+	io.sockets.emit('gamecreated', games);
+	socket.emit('playgame', {username: username})
+}
+
+const getgames = socket => {
+
+}
+
+const disconnect = socket => {
+	for(let user in sessions){
+		if (socket == sessions[user]){
+			delete sessions[user];
+			break;
+		}
+	}
 }
 
 const login = (socket, db, data) => {
@@ -59,8 +87,11 @@ const login = (socket, db, data) => {
 			});
 			return;
 		}
+		sessions[res.username] = socket;
 		socket.emit('loginsuccess', {
-			username: query.username
+			username: res.username,
+			wins: res.wins,
+			losses: res.losses
 		});
 	})
 }
@@ -91,7 +122,7 @@ const register = (socket, db, data) => {
 			return;
 		}
 
-		users.insert({username: query.username, password: query.password}, (err, user)=>{
+		users.insert({username: query.username, password: query.password, wins: 0, losses: 0}, (err, user)=>{
 			if (err){
 				socket.emit('usercreated', {
 					msg: `DB is having issues. Please contact admin.`
@@ -99,7 +130,7 @@ const register = (socket, db, data) => {
 				return;
 			}
 			socket.emit('usercreated', {
-				msg: `User ${query.username} has been created`
+				msg: `User ${query.username} has been created.`
 			});
 		});
 	})
