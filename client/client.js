@@ -155,7 +155,7 @@ const gamespage = data => {
 	});
 }
 
-socket.on('playgame', data=>{
+socket.on('creategame', data=>{
 	playgamepage(data);
 });
 
@@ -165,6 +165,7 @@ socket.on('joingame', data=>{
 
 //doesnt work
 socket.on('gamecreated', data=>{
+	console.log('gamecreated trigger');
 	if (document.getElementById('games')){
 		for (let user in data){
 			document.getElementById('games').innerHTML += `<div>${user}'s game</div>`;
@@ -180,34 +181,25 @@ const playgamepage = data => {
 	div.innerHTML = `<div id='loggedin' style='font-size: 20;'>Welcome back ${data.username}</div>
 					${header()}
 					<div class="container" align='center'>
-					    <div class="col-md-4">
-					        <div class="row">
-					        	<div>Team1</div>
-					        </div>
-					        <div class="row">
-					        	<div>Rob</div>
-					        	<div>Simon</div>
-					        </div>
-					    </div>
-
-					    <div class="col-md-4">
-					    	<div class='row'>
-					    		<div>Inbound</div>
-					    	</div>
-					    	<div class='row'>
-					    		<div>Jeremy</div>
-					    		<div>Steve</div>
-					    	</div>
-					    </div>
-
-					    <div class="col-md-4">
-					    	<div class='row'>
-					    		<div>Team2</div>
-					    	</div>
-					    	<div class='row'>
-					    		<div>Shenanigans</div>
-					    	</div>
-					    </div>
+					    <div class="row">
+							<div class="col">Team1</div>
+							<div class="col">Inbound</div>
+							<div class="col">Team2</div>
+							<div class="w-100"></div>
+						</div>
+						<div class='row'>
+							<div class="col">
+								<div>Simon</div>
+								<div>Rob</div>
+							</div>
+							<div class="col">
+								<div>Steve</div>
+								<div>Jeremy</div>
+							</div>
+							<div class="col">
+								<div>Some random dude with a really obnoxiously long name's game</div>
+							</div>
+						</div>
 					</div>
 					${footer()}
 	`;

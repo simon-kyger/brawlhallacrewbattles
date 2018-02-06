@@ -46,7 +46,7 @@ const creategame = socket => {
 	}
 	games[username] = {};
 	io.sockets.emit('gamecreated', games);
-	socket.emit('playgame', {username: username})
+	socket.emit('creategame', {username: username})
 }
 
 const getgames = socket => {
