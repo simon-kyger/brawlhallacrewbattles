@@ -30,6 +30,8 @@ mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
 		socket.on('disconnect', ()=>disconnect(socket));
 		socket.on('getgames', ()=>getgames(socket));
 		socket.on('creategame', ()=>creategame(socket));
+		socket.on('joingame', (data)=>joingame(socket, data));
+		socket.on('updategame', (data)=>updategame(socket, data));
 	});
 });
 
@@ -62,6 +64,29 @@ const checkuserhasgame = socket => {
 }
 
 //void
+const joingame = (socket, data) => {
+	let username = getusername(socket);
+	for (let i=0; i<games.length; i++){
+		let game = games[i];
+		if(game.admin == data){
+			game.inbound.push(username);
+			socket.emit('joingame', {
+				username: username,
+				game: game
+			});
+			io.sockets.emit('gameupdate', game);
+			break;
+		}
+	}
+}
+
+//void
+const updategame = (socket, data) =>{
+	let username = getusername(socket);
+	console.log(data);
+}
+
+//void
 const creategame = socket => {
 	if (checkuserhasgame(socket))
 		return;
@@ -69,11 +94,16 @@ const creategame = socket => {
 	const game = {
 		admin: username,
 		captains: [],
-		inbound: []
+		team1: [],
+		inbound: [],
+		team2: []
 	};
 	games.push(game);
 	io.sockets.emit('gamesupdate', games);
-	socket.emit('creategame', {username: username});
+	socket.emit('creategame', {
+		username: username,
+		game: game
+	});
 }
 
 //void
@@ -84,8 +114,45 @@ const disconnect = socket => {
 		for (let i=0; i<games.length; i++){
 			let game = games[i];
 			if (game.admin == username){
+				let team1 = game.team1;
+				let team2 = game.team2;
+				let inbound = game.inbound;
+				game.admin = 'Admin left, please leave the game.'
+				for(let j=0; j<team1.length; j++){
+					if(sessions[team1[j]])
+						sessions[team1[j]].emit('gameupdate', game);
+				}
+				for(let j=0; j<team2.length; j++){
+					if(sessions[team2[j]])
+						sessions[team2[j]].emit('gameupdate', game);
+				}
+				for(let j=0; j<inbound.length; j++){
+					if(sessions[inbound[j]])
+						sessions[inbound[j]].emit('gameupdate', game);
+				}
 				games.splice(i, 1);
 				io.sockets.emit('gamesupdate', games);
+			}
+			let team1 = game.team1;
+			let team2 = game.team2;
+			let inbound = game.inbound;
+			for(let j=0; j<team1.length; j++){
+				if (team1[j] == username){
+					team1.splice(j, 1);
+					io.sockets.emit('gameupdate', game);
+				}
+			}
+			for(let j=0; j<team2.length; j++){
+				if (team2[j] == username){
+					team2.splice(j, 1);
+					io.sockets.emit('gameupdate', game);
+				}
+			}
+			for(let j=0; j<inbound.length; j++){
+				if (inbound[j] == username){
+					inbound.splice(j, 1);
+					io.sockets.emit('gameupdate', game);
+				}
 			}
 		}
 	}
@@ -124,6 +191,14 @@ const login = (socket, db, data) => {
 				msg: `Unknown user and/or password combination.`
 			});
 			return;
+		}
+		for(let users in sessions){
+			if(sessions[users] == sessions[res.username]){
+				socket.emit('usercreated',{
+					msg: `User is already signed in.`
+				});
+				return;
+			}
 		}
 		sessions[res.username] = socket;
 		socket.emit('loginsuccess', {

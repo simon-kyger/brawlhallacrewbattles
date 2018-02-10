@@ -117,7 +117,7 @@ const gamespage = data => {
 							</li>
 						</ul>
 						<form>
-							<select id='games' size='8' style='width: 500; height: 400; float: right; font-size:20; background-color: black;'>
+							<select id='games' size='2' style='width: 500; height: 400; float: right; font-size:20; background-color: black;'>
 							</select>
 						</form>
 					</div>
@@ -127,7 +127,8 @@ const gamespage = data => {
 		socket.emit('creategame');
 	});
 	document.getElementById('joingame').addEventListener('click', e=>{
-		const selectedgame = document.getElementById('games').options[e.selectedIndex].value;
+		let selectedgame = document.getElementById('games').options[document.getElementById('games').options.selectedIndex].value;
+		selectedgame = selectedgame.substring(0, selectedgame.length - 7);
 		socket.emit('joingame', selectedgame);
 	});
 }
@@ -140,7 +141,6 @@ socket.on('joingame', data=>{
 	playgamepage(data);
 });
 
-//doesnt work
 socket.on('gamesupdate', data=>{
 	if (document.getElementById('games')){
 		document.getElementById('games').innerHTML = '';
@@ -158,29 +158,85 @@ const playgamepage = data => {
 	div.style.height = `100%`;
 	div.innerHTML = `<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
 					${headert()}
-					<div class="container" align='center' style='text-align: left;'>
+					<div id='game' class="container" align='center' style='text-align: left;'>
 						<div class="row">
-							<div class="col">Admin: ${data.admin}</div>
-					    <div class="row">
-							<div class="col">Team1</div>
-							<div class="col">Inbound</div>
-							<div class="col">Team2</div>
-							<div class="w-100"></div>
+							<div class="col">
+								<span>Admin:</span>
+								<span id='admin'>${data.game.admin}</span>
+							</div>
 						</div>
-						<div class='row'>
-							<div class="col" style='border: 1px solid white;'>
-								<div>Simon</div>
-								<div>Rob</div>
+						<div class="row">
+							<span>Captains:</span>
+							<span id='captains'></span>
+						</div>
+						<div class="row">
+							<div class="col"></div>
+							<div class="col">
+								<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
+								<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer; float: right;"></span>
 							</div>
-							<div class="col" style='border: 1px solid white;'>
-								<div>Steve</div>
-								<div>Jeremy</div>
-							</div>
-							<div class="col" style='border: 1px solid white;'>
-								<div>Some random dude with a really obnoxiously long name's game</div>
-							</div>
+							<div class="col"></div>
+						</div>
+						<div class="row">
+							<div class="col">Team1:</div>
+							<div class="col">Inbound:</div>
+							<div class="col">Team2:</div>
+						</div>
+						<div id='allplayers' class='row' style="max-height: 800px; max-width: 1600px; overflow: auto;">
+							<ul id='team1' class="col" style='list-style-type:none;'>
+							</ul>
+							<ul id='inbound' class="col" style='list-style-type:none;'>
+							</ul>
+							<ul id='team2' class="col" style='list-style-type:none;'>
+							</ul>
 						</div>
 					</div>
 					${footert()}
 	`;
 }
+
+socket.on('gameupdate', data=>{
+	if (document.getElementById('game')){
+		document.getElementById('admin').innerHTML = data.admin;
+
+		document.getElementById('captains').innerHTML = '';
+		for(let i=0; i<data.captains.length; i++){
+			document.getElementById('captains').innerHTML += `${data.captains[i]} `;
+		}
+		document.getElementById('team1').innerHTML = '';
+		for(let i=0; i<data.team1.length; i++){
+			document.getElementById('team1').innerHTML += `<li class='uclick'>${data.team1[i]}</li>`;
+		}
+		document.getElementById('inbound').innerHTML = '';
+		for(let i=0; i<data.inbound.length; i++){
+			document.getElementById('inbound').innerHTML += `<li class='uclick'>${data.inbound[i]}</li>`;
+		}
+		document.getElementById('team2').innerHTML = '';
+		for(let i=0; i<data.team2.length; i++){
+			document.getElementById('team2').innerHTML += `<li class='uclick'>${data.team2[i]}</li>`;
+		}
+		let userselected;
+		let j = document.getElementsByClassName('uclick');
+		for (let i=0; i<j.length; i++){
+			j[i].addEventListener('click', e=>{
+				userselected = e.target.textContent;
+			});
+		}
+		document.getElementById('moveright').addEventListener('click', e=>{
+			if(!userselected)
+				return;
+			socket.emit('updategame', {
+				selected: userselected,
+				movement: 'right'
+			});
+		});
+		document.getElementById('moveleft').addEventListener('click', e=>{
+			if(!userselected)
+				return;
+			socket.emit('updategame', {
+				selected: userselected,
+				movement: 'left'
+			});
+		});
+	}
+});
