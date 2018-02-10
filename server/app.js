@@ -11,7 +11,7 @@ const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
 const dbport = process.env.DBPORT || 27017;
 let sessions = {};
-let games = {};
+let games = [];
 
 app.use('/', express.static(path.join(__dirname, '../client')));
 server.listen(serverport);
@@ -33,27 +33,64 @@ mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
 	});
 });
 
+//void
 const init = socket =>{
 	//
 }
 
-const creategame = socket => {
+//returns string
+const getusername = socket => {
 	let username;
 	for (let users in sessions){
 		if(sessions[users] == socket){
 			username = users;
 		}
 	}
-	games[username] = {};
-	io.sockets.emit('gamecreated', games);
-	socket.emit('creategame', {username: username})
+	return username;
 }
 
-const getgames = socket => {
-
+//returns boolean
+const checkuserhasgame = socket => {
+	let username = getusername(socket);
+	for (let i=0; i<games.length; i++){
+		let game = games[i];
+		if (game.admin == username){
+			return true;
+		}
+	}
+	return false;
 }
 
+//void
+const creategame = socket => {
+	if (checkuserhasgame(socket))
+		return;
+	const username = getusername(socket);
+	const game = {
+		admin: username,
+		captains: [],
+		inbound: []
+	};
+	games.push(game);
+	io.sockets.emit('gamesupdate', games);
+	socket.emit('creategame', {username: username});
+}
+
+//void
 const disconnect = socket => {
+	//game cleanup
+	let username = getusername(socket);
+	if (username){
+		for (let i=0; i<games.length; i++){
+			let game = games[i];
+			if (game.admin == username){
+				games.splice(i, 1);
+				io.sockets.emit('gamesupdate', games);
+			}
+		}
+	}
+
+	//session cleanup
 	for(let user in sessions){
 		if (socket == sessions[user]){
 			delete sessions[user];
@@ -62,6 +99,7 @@ const disconnect = socket => {
 	}
 }
 
+//void
 const login = (socket, db, data) => {
 	if(!data.username){
 		socket.emit('usercreated', {
@@ -93,9 +131,11 @@ const login = (socket, db, data) => {
 			wins: res.wins,
 			losses: res.losses
 		});
+		socket.emit('gamesupdate', games);
 	})
 }
 
+//void
 const register = (socket, db, data) => {
 	if(!data.username){
 		socket.emit('usercreated', {
