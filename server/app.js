@@ -42,21 +42,27 @@ const init = socket =>{
 
 //returns string
 const getusername = socket => {
-	let username;
-	for (let users in sessions){
-		if(sessions[users] == socket){
-			username = users;
-		}
-	}
-	return username;
+	return Object.keys(sessions).find(key => sessions[key] === socket);
 }
 
 //returns boolean
-const checkuserhasgame = socket => {
+const checkifadmin = socket => {
 	let username = getusername(socket);
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
 		if (game.admin == username){
+			return true;
+		}
+	}
+	return false;
+}
+
+//returns boolean
+const checkifcaptain = socket => {
+	let username = getusername(socket);
+	for (let i=0; i<games.length; i++){
+		let game = games[i];
+		if((game.captains[0] == username) || (game.captains[1] == username)){
 			return true;
 		}
 	}
@@ -80,30 +86,107 @@ const joingame = (socket, data) => {
 	}
 }
 
+const findgame = (socket) => {
+	for (let i=0; i<games.length; i++){
+		let game = games[i];
+		if (game.admin == getusername(socket))
+			return game;
+		if ((game.captains[0] == getusername(socket)) || (game.captains[1]) == getusername(socket))
+			return game;
+		for (let j=0; j<game.inbound.length; j++){
+			if(game.inbound[j] == getusername(socket))
+				return game;
+		}
+	}
+}
+
 //void
 const updategame = (socket, data) =>{
+	let game = findgame(socket);
 	let username = getusername(socket);
-	console.log(data);
+	//if captains pick
+	if (game.phase){
+		if (game.picking == username){
+			if(data.movement == 'left'){
+				if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
+					game.team2.splice(game.team2.indexOf(data.selected), 1);
+					game.inbound.push(data.selected);
+				} else {
+					game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+					game.team1.push(data.selected);
+				}
+			}
+			if(data.movement == 'right'){
+				if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
+					game.team1.splice(game.team1.indexOf(data.selected), 1);
+					game.inbound.push(data.selected);
+				} else {
+					game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+					game.team2.push(data.selected);
+				}
+			}
+
+			if (game.captains.indexOf(username)){
+				game.picking = game.captains[0];
+			} else {
+				game.picking = game.captains[1];
+			}
+		}
+	} else if ((game.admin == username) && !game.phase){
+		//admin control only
+		if(data.movement == 'left'){
+			if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
+				game.team2.splice(game.team2.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			} else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team1.push(data.selected);
+			}
+		}
+		if(data.movement == 'right'){
+			if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
+				game.team1.splice(game.team1.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			} else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team2.push(data.selected);
+			}
+		}
+	} else {
+		return;
+	}
+	if (game.team1.length && game.team2.length && !game.phase){
+		game.captains[0] = game.team1[0];
+		game.captains[1] = game.team2[0];
+		game.phase = true;
+		game.picking = game.captains[0];
+	}
+	io.sockets.emit('gameupdate', game);
 }
 
 //void
 const creategame = socket => {
-	if (checkuserhasgame(socket))
+	if (checkifadmin(socket))
 		return;
 	const username = getusername(socket);
 	const game = {
 		admin: username,
 		captains: [],
 		team1: [],
-		inbound: [],
-		team2: []
+		inbound: [username],
+		team2: [],
+		phase: false,
+		picking: username,
 	};
 	games.push(game);
-	io.sockets.emit('gamesupdate', games);
-	socket.emit('creategame', {
+	socket.emit('joingame', {
 		username: username,
 		game: game
 	});
+	io.sockets.emit('gamesupdate', games);
+	setTimeout(()=>{
+		socket.emit('gameupdate', game)
+	}, 0);
 }
 
 //void

@@ -133,10 +133,6 @@ const gamespage = data => {
 	});
 }
 
-socket.on('creategame', data=>{
-	playgamepage(data);
-});
-
 socket.on('joingame', data=>{
 	playgamepage(data);
 });
@@ -159,21 +155,26 @@ const playgamepage = data => {
 	div.innerHTML = `<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
 					${headert()}
 					<div id='game' class="container" align='center' style='text-align: left;'>
-						<div class="row">
-							<div class="col">
-								<span>Admin:</span>
-								<span id='admin'>${data.game.admin}</span>
-							</div>
+						<div class="row" style='font-size:20;'>
+							<span>Admin:</span>
+							<span id='admin'>${data.game.admin}</span>
 						</div>
-						<div class="row">
+						<div class="row" style='font-size:20;'>
 							<span>Captains:</span>
 							<span id='captains'></span>
+						</div>
+						<div class="row" style='font-size:20;'>
+							<span>Currently picking:</span>
+							<span id='picking'></span>
 						</div>
 						<div class="row">
 							<div class="col"></div>
 							<div class="col">
 								<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
-								<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer; float: right;"></span>
+							</div>
+							<div class="col"></div>
+							<div class="col">
+								<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
 							</div>
 							<div class="col"></div>
 						</div>
@@ -198,6 +199,7 @@ const playgamepage = data => {
 socket.on('gameupdate', data=>{
 	if (document.getElementById('game')){
 		document.getElementById('admin').innerHTML = data.admin;
+		document.getElementById('picking').innerHTML = data.picking;
 
 		document.getElementById('captains').innerHTML = '';
 		for(let i=0; i<data.captains.length; i++){
@@ -229,6 +231,7 @@ socket.on('gameupdate', data=>{
 				selected: userselected,
 				movement: 'right'
 			});
+			userselected = '';
 		});
 		document.getElementById('moveleft').addEventListener('click', e=>{
 			if(!userselected)
@@ -237,6 +240,7 @@ socket.on('gameupdate', data=>{
 				selected: userselected,
 				movement: 'left'
 			});
+			userselected = '';
 		});
 	}
 });
