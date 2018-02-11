@@ -77,12 +77,20 @@ const joingame = (socket, data) => {
 		let game = games[i];
 		if(game.admin == data){
 			game.inbound.push(username);
+
 			socket.emit('joingame', {
 				username: username,
 				game: game
 			});
-			io.sockets.emit('gameupdate', game);
-			break;
+			for (let j=0; j<game.inbound.length; j++){
+				sessions[game.inbound[j]].emit('gameupdate', game);
+			}
+			for (let j=0; j<game.team1.length; j++){
+				sessions[game.team1[j]].emit('gameupdate', game);
+			}
+			for (let j=0; j<game.team2.length; j++){
+				sessions[game.team2[j]].emit('gameupdate', game);
+			}
 		}
 	}
 }
@@ -90,10 +98,14 @@ const joingame = (socket, data) => {
 const findgame = (socket) => {
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
-		if (game.admin == getusername(socket))
-			return game;
-		if ((game.captains[0] == getusername(socket)) || (game.captains[1]) == getusername(socket))
-			return game;
+		for (let j=0; j<game.team1.length; j++){
+			if(game.team1[j] == getusername(socket))
+				return game;
+		}
+		for (let j=0; j<game.team2.length; j++){
+			if(game.team2[j] == getusername(socket))
+				return game;
+		}
 		for (let j=0; j<game.inbound.length; j++){
 			if(game.inbound[j] == getusername(socket))
 				return game;
@@ -128,9 +140,11 @@ const resetgame = socket => {
 	for (let i=0; i<games.length; i++){
 		if (games[i].admin == username){
 			games[i] = ngame;
-			io.sockets.emit('gameupdate', ngame);
-			return;
+			break;
 		}
+	}
+	for (let i=0; i<ngame.inbound.length; i++){
+		sessions[ngame.inbound[i]].emit('gameupdate', ngame);
 	}
 }
 
@@ -210,7 +224,15 @@ const updategame = (socket, data) =>{
 		game.phase = true;
 		game.picking = game.captains[0];
 	}
-	io.sockets.emit('gameupdate', game);
+	for (let i=0; i<game.team1.length; i++){
+		sessions[game.team1[i]].emit('gameupdate', game);
+	}
+	for (let i=0; i<game.team2.length; i++){
+		sessions[game.team2[i]].emit('gameupdate', game);
+	}
+	for (let i=0; i<game.inbound.length; i++){
+		sessions[game.inbound[i]].emit('gameupdate', game);
+	}
 }
 
 //void
@@ -242,49 +264,66 @@ const creategame = socket => {
 const disconnect = socket => {
 	//game cleanup
 	let username = getusername(socket);
-	if (username){
-		for (let i=0; i<games.length; i++){
-			let game = games[i];
-			if (game.admin == username){
-				let team1 = game.team1;
-				let team2 = game.team2;
-				let inbound = game.inbound;
-				game.admin = 'Admin left, please leave the game.'
-				for(let j=0; j<team1.length; j++){
-					if(sessions[team1[j]])
-						sessions[team1[j]].emit('gameupdate', game);
-				}
-				for(let j=0; j<team2.length; j++){
-					if(sessions[team2[j]])
-						sessions[team2[j]].emit('gameupdate', game);
-				}
-				for(let j=0; j<inbound.length; j++){
-					if(sessions[inbound[j]])
-						sessions[inbound[j]].emit('gameupdate', game);
-				}
-				games.splice(i, 1);
-				io.sockets.emit('gamesupdate', games);
+	let ad = false;
+	for (let i=0; i<games.length; i++){
+		let game = games[i];
+		if (game.admin == username){
+			games.splice(i, 1);
+			for (let k=0; k<game.team1.length; k++){
+				sessions[game.team1[k]].emit('loginsuccess', {username: game.team1[k]});
 			}
-			let team1 = game.team1;
-			let team2 = game.team2;
-			let inbound = game.inbound;
-			for(let j=0; j<team1.length; j++){
-				if (team1[j] == username){
-					team1.splice(j, 1);
-					io.sockets.emit('gameupdate', game);
-				}
+			for (let k=0; k<game.team2.length; k++){
+				sessions[game.team2[k]].emit('loginsuccess', {username: game.team2[k]});
 			}
-			for(let j=0; j<team2.length; j++){
-				if (team2[j] == username){
-					team2.splice(j, 1);
-					io.sockets.emit('gameupdate', game);
-				}
+			for (let k=0; k<game.inbound.length; k++){
+				sessions[game.inbound[k]].emit('loginsuccess', {username: game.inbound[k]});
 			}
-			for(let j=0; j<inbound.length; j++){
-				if (inbound[j] == username){
-					inbound.splice(j, 1);
-					io.sockets.emit('gameupdate', game);
+			io.sockets.emit('gamesupdate', games);
+			break;
+		}
+		for(let j=0; j<game.team1.length; j++){
+			if (game.team1[j] == username){
+				game.team1.splice(j, 1);
+				for (let k=0; k<game.team1.length; k++){
+					sessions[game.team1[k]].emit('gameupdate', game);
 				}
+				for (let k=0; k<game.team2.length; k++){
+					sessions[game.team2[k]].emit('gameupdate', game);
+				}
+				for (let k=0; k<game.inbound.length; k++){
+					sessions[game.inbound[k]].emit('gameupdate', game);
+				}
+				break;
+			}
+		}
+		for(let j=0; j<game.team2.length; j++){
+			if (game.team2[j] == username){
+				game.team2.splice(j, 1);
+				for (let k=0; k<game.team1.length; k++){
+					sessions[game.team1[k]].emit('gameupdate', game);
+				}
+				for (let k=0; k<game.team2.length; k++){
+					sessions[game.team2[k]].emit('gameupdate', game);
+				}
+				for (let k=0; k<game.inbound.length; k++){
+					sessions[game.inbound[k]].emit('gameupdate', game);
+				}
+				break;
+			}
+		}
+		for(let j=0; j<game.inbound.length; j++){
+			if (game.inbound[j] == username){
+				game.inbound.splice(j, 1);
+				for (let k=0; k<game.team1.length; k++){
+					sessions[game.team1[k]].emit('gameupdate', game);
+				}
+				for (let k=0; k<game.team2.length; k++){
+					sessions[game.team2[k]].emit('gameupdate', game);
+				}
+				for (let k=0; k<game.inbound.length; k++){
+					sessions[game.inbound[k]].emit('gameupdate', game);
+				}
+				break;
 			}
 		}
 	}
