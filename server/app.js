@@ -32,6 +32,7 @@ mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
 		socket.on('creategame', ()=>creategame(socket));
 		socket.on('joingame', (data)=>joingame(socket, data));
 		socket.on('updategame', (data)=>updategame(socket, data));
+		socket.on('resetgame', ()=>resetgame(socket));
 	});
 });
 
@@ -100,6 +101,39 @@ const findgame = (socket) => {
 	}
 }
 
+const resetgame = socket => {
+	let game = findgame(socket);
+	let username = getusername(socket);
+	if (game.admin !== username)
+		return;
+	const ngame = {
+		admin: username,
+		captains: [],
+		team1: [],
+		inbound: [],
+		team2: [],
+		phase: false,
+		picking: username,
+	};
+	for (let i=0; i<game.team1.length; i++){
+		ngame.inbound.push(game.team1[i]);
+	}
+	for (let i=0; i<game.team2.length; i++){
+		ngame.inbound.push(game.team2[i]);
+	}
+	for (let i=0; i<game.inbound.length; i++){
+		ngame.inbound.push(game.inbound[i]);
+	}
+
+	for (let i=0; i<games.length; i++){
+		if (games[i].admin == username){
+			games[i] = ngame;
+			io.sockets.emit('gameupdate', ngame);
+			return;
+		}
+	}
+}
+
 //void
 const updategame = (socket, data) =>{
 	let game = findgame(socket);
@@ -107,7 +141,13 @@ const updategame = (socket, data) =>{
 	//if captains pick
 	if (game.phase){
 		if (game.picking == username){
+			if((data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
+				return;
 			if(data.movement == 'left'){
+				if ((data.container =='team1') || (game.picking == game.captains[1]))
+					return;
+				if ((data.container =='team2') && (game.picking == game.captains[0]))
+					return;
 				if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
 					game.team2.splice(game.team2.indexOf(data.selected), 1);
 					game.inbound.push(data.selected);
@@ -117,6 +157,10 @@ const updategame = (socket, data) =>{
 				}
 			}
 			if(data.movement == 'right'){
+				if((data.container == 'team2') || (game.picking == game.captains[0]))
+					return;
+				if ((data.container =='team1') && (game.picking == game.captains[1]))
+					return;
 				if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
 					game.team1.splice(game.team1.indexOf(data.selected), 1);
 					game.inbound.push(data.selected);
@@ -135,6 +179,8 @@ const updategame = (socket, data) =>{
 	} else if ((game.admin == username) && !game.phase){
 		//admin control only
 		if(data.movement == 'left'){
+			if ((data.container == 'team1') || game.team1.length)
+				return;
 			if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
 				game.team2.splice(game.team2.indexOf(data.selected), 1);
 				game.inbound.push(data.selected);
@@ -144,6 +190,8 @@ const updategame = (socket, data) =>{
 			}
 		}
 		if(data.movement == 'right'){
+			if ((data.container == 'team2') || game.team2.length)
+				return;
 			if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
 				game.team1.splice(game.team1.indexOf(data.selected), 1);
 				game.inbound.push(data.selected);
@@ -153,6 +201,7 @@ const updategame = (socket, data) =>{
 			}
 		}
 	} else {
+		//for anyone trying to move anything that isn't an admin or a captain
 		return;
 	}
 	if (game.team1.length && game.team2.length && !game.phase){

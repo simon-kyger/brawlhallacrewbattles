@@ -152,9 +152,13 @@ const playgamepage = data => {
 	div.innerHTML = '';
 	div.style.width = `100%`;
 	div.style.height = `100%`;
+	div.innerHTML = ``;
 	div.innerHTML = `<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
 					${headert()}
 					<div id='game' class="container" align='center' style='text-align: left;'>
+						<div class='row' style='float: right; font-size: 20'>
+							<button id='reset' style='color: white; background-color: black;'>ResetGame</button>
+						</div>
 						<div class="row" style='font-size:20;'>
 							<span>Admin:</span>
 							<span id='admin'>${data.game.admin}</span>
@@ -179,14 +183,23 @@ const playgamepage = data => {
 							<div class="col"></div>
 						</div>
 						<div class="row">
-							<div class="col">Team1:</div>
-							<div class="col">Inbound:</div>
-							<div class="col">Team2:</div>
+							<div class="col">
+								Team1:
+								<div style='border-bottom: 1px solid white; width: 50%'></div>
+							</div>
+							<div class="col">
+								Inbound:
+								<div style='border-bottom: 1px solid white; width: 50%'></div>
+							</div>
+							<div class="col">
+								Team2:
+								<div style='border-bottom: 1px solid white; width: 50%'></div>
+							</div>
 						</div>
 						<div id='allplayers' class='row' style="max-height: 800px; max-width: 1600px; overflow: auto;">
 							<ul id='team1' class="col" style='list-style-type:none;'>
 							</ul>
-							<ul id='inbound' class="col" style='list-style-type:none;'>
+							<ul id='inbound' class="col" style='list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:600;'>
 							</ul>
 							<ul id='team2' class="col" style='list-style-type:none;'>
 							</ul>
@@ -194,6 +207,9 @@ const playgamepage = data => {
 					</div>
 					${footert()}
 	`;
+	document.getElementById('reset').addEventListener('click', e=>{
+		socket.emit('resetgame');
+	});
 }
 
 socket.on('gameupdate', data=>{
@@ -207,40 +223,45 @@ socket.on('gameupdate', data=>{
 		}
 		document.getElementById('team1').innerHTML = '';
 		for(let i=0; i<data.team1.length; i++){
-			document.getElementById('team1').innerHTML += `<li class='uclick'>${data.team1[i]}</li>`;
+			document.getElementById('team1').innerHTML += `<li class='uclick' style='cursor: pointer;'>${data.team1[i]}</li>`;
 		}
 		document.getElementById('inbound').innerHTML = '';
 		for(let i=0; i<data.inbound.length; i++){
-			document.getElementById('inbound').innerHTML += `<li class='uclick'>${data.inbound[i]}</li>`;
+			document.getElementById('inbound').innerHTML += `<li class='uclick' style='cursor: pointer;'>${data.inbound[i]}</li>`;
 		}
 		document.getElementById('team2').innerHTML = '';
 		for(let i=0; i<data.team2.length; i++){
-			document.getElementById('team2').innerHTML += `<li class='uclick'>${data.team2[i]}</li>`;
+			document.getElementById('team2').innerHTML += `<li class='uclick' style='cursor: pointer;'>${data.team2[i]}</li>`;
 		}
-		let userselected;
+		let userselected = {};
 		let j = document.getElementsByClassName('uclick');
 		for (let i=0; i<j.length; i++){
 			j[i].addEventListener('click', e=>{
-				userselected = e.target.textContent;
+				userselected = {
+					username: e.target.textContent,
+					container: e.target.parentElement.id
+				};
 			});
 		}
 		document.getElementById('moveright').addEventListener('click', e=>{
-			if(!userselected)
+			if(!userselected.username)
 				return;
 			socket.emit('updategame', {
-				selected: userselected,
+				selected: userselected.username,
+				container: userselected.container,
 				movement: 'right'
 			});
-			userselected = '';
+			userselected = {};
 		});
 		document.getElementById('moveleft').addEventListener('click', e=>{
-			if(!userselected)
+			if(!userselected.username)
 				return;
 			socket.emit('updategame', {
-				selected: userselected,
+				selected: userselected.username,
+				container: userselected.container,
 				movement: 'left'
 			});
-			userselected = '';
+			userselected = {};
 		});
 	}
 });
