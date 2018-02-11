@@ -3,7 +3,7 @@ const socket = io();
 //static templates
 const headert = () => {
 	return `<div id='header' class='container' align='center'>
-				<img src='img/blogotop.png' style='padding-top: 50'>
+				<a href='https://www.brawlhalla.com' target='_blank'><img src='img/blogotop.png' style='padding-top: 50'></a>
 				<div class='list-group' style='color: orange; width: 400; text-align: center;'>CREWS</div>
 			</div>
 	`;
@@ -234,9 +234,9 @@ socket.on('gameupdate', data=>{
 			document.getElementById('team2').innerHTML += `<li class='uclick' style='cursor: pointer;'>${data.team2[i]}</li>`;
 		}
 		let userselected = {};
-		let j = document.getElementsByClassName('uclick');
-		for (let i=0; i<j.length; i++){
-			j[i].addEventListener('click', e=>{
+		let clickers = document.getElementsByClassName('uclick');
+		for (let i=0; i<clickers.length; i++){
+			clickers[i].addEventListener('click', e=>{
 				userselected = {
 					username: e.target.textContent,
 					container: e.target.parentElement.id
