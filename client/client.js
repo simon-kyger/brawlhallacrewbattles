@@ -1,5 +1,5 @@
 (function(){
-	
+
 	const socket = io();
 
 	//static templates
@@ -217,7 +217,7 @@
 							<div id='allplayers' class='row' style="max-height: 800px; max-width: 1600px; overflow: auto;">
 								<ul id='team1' class="col" style='list-style-type:none;'>
 								</ul>
-								<ul id='inbound' class="col" style='list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:600;'>
+								<ul id='inbound' class="col" style='list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:400;'>
 								</ul>
 								<ul id='team2' class="col" style='list-style-type:none;'>
 								</ul>
