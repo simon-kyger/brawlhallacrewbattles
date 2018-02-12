@@ -33,6 +33,7 @@ mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
 		socket.on('joingame', (data)=>joingame(socket, data));
 		socket.on('updategame', (data)=>updategame(socket, data));
 		socket.on('resetgame', ()=>resetgame(socket));
+		socket.on('leavegame', ()=>leavegame(socket));
 	});
 });
 
@@ -77,10 +78,9 @@ const joingame = (socket, data) => {
 		let game = games[i];
 		if(game.admin == data){
 			game.inbound.push(username);
-
 			socket.emit('joingame', {
 				username: username,
-				game: game
+				game: game,
 			});
 			for (let j=0; j<game.inbound.length; j++){
 				sessions[game.inbound[j]].emit('gameupdate', game);
@@ -95,7 +95,7 @@ const joingame = (socket, data) => {
 	}
 }
 
-const findgame = (socket) => {
+const findgame = socket => {
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
 		for (let j=0; j<game.team1.length; j++){
@@ -111,6 +111,57 @@ const findgame = (socket) => {
 				return game;
 		}
 	}
+}
+
+const leavegame = socket => {
+	let game = findgame(socket);
+	let username = getusername(socket);
+	if (game.admin ==username){
+		for (let i=0; i<game.inbound.length; i++){
+			sessions[game.inbound[i]].emit('loginsuccess', {username: game.inbound[i]});
+			sessions[game.inbound[i]].emit('notification', `Game admin ${game.admin} left the game.`);
+		}
+		for (let i=0; i<game.team1.length; i++){
+			sessions[game.team1[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
+		}
+		for (let i=0; i<game.team2.length; i++){
+			sessions[game.team2[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
+		}
+		for (let i=0; i<games.length; i++){
+			if (games[i]==game){
+				games.splice(i, 1);
+			}
+		}
+	} else {
+		for (let i=0; i<game.inbound.length; i++){
+			if (game.inbound[i]==username){
+				game.inbound.splice(i, 1);
+			}
+		}
+		for (let i=0; i<game.team1.length; i++){
+			if (game.team1[i]==username){
+				game.team1.splice(i, 1);
+			}
+		}
+		for (let i=0; i<game.team2.length; i++){
+			if (game.team2[i]==username){
+				game.team2.splice(i, 1);
+			}
+		}
+		for (let j=0; j<game.inbound.length; j++){
+			sessions[game.inbound[j]].emit('gameupdate', game);
+		}
+		for (let j=0; j<game.team1.length; j++){
+			sessions[game.team1[j]].emit('gameupdate', game);
+		}
+		for (let j=0; j<game.team2.length; j++){
+			sessions[game.team2[j]].emit('gameupdate', game);
+		}
+		socket.emit('loginsuccess', {username: username});
+	}
+	io.sockets.emit('gamesupdate', games);
 }
 
 const resetgame = socket => {
@@ -252,7 +303,8 @@ const creategame = socket => {
 	games.push(game);
 	socket.emit('joingame', {
 		username: username,
-		game: game
+		game: game,
+		resettable: true
 	});
 	io.sockets.emit('gamesupdate', games);
 	setTimeout(()=>{
@@ -271,12 +323,15 @@ const disconnect = socket => {
 			games.splice(i, 1);
 			for (let k=0; k<game.team1.length; k++){
 				sessions[game.team1[k]].emit('loginsuccess', {username: game.team1[k]});
+				sessions[game.team1[k]].emit('notification', `Game admin ${game.admin} left the game.`);
 			}
 			for (let k=0; k<game.team2.length; k++){
 				sessions[game.team2[k]].emit('loginsuccess', {username: game.team2[k]});
+				sessions[game.team2[k]].emit('notification', `Game admin ${game.admin} left the game.`);
 			}
 			for (let k=0; k<game.inbound.length; k++){
 				sessions[game.inbound[k]].emit('loginsuccess', {username: game.inbound[k]});
+				sessions[game.inbound[k]].emit('notification', `Game admin ${game.admin} left the game.`);
 			}
 			io.sockets.emit('gamesupdate', games);
 			break;

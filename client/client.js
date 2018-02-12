@@ -105,6 +105,7 @@ const gamespage = data => {
 	div.innerHTML = `<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
 					${headert()}
 					<div class='container' align='center' style='width: 750;'>
+						<div id='intermediate' style='font-size: 20;'></div>
 						<div style='width: 38%; text-align: left;'>
 							Active
 						</div>
@@ -137,6 +138,12 @@ socket.on('joingame', data=>{
 	playgamepage(data);
 });
 
+socket.on('notification', data=>{
+	if(document.getElementById('intermediate')){
+		document.getElementById('intermediate').innerHTML = data;
+	}
+});
+
 socket.on('gamesupdate', data=>{
 	if (document.getElementById('games')){
 		document.getElementById('games').innerHTML = '';
@@ -146,6 +153,10 @@ socket.on('gamesupdate', data=>{
 		}
 	}
 });
+
+const renderreset = () => {
+	return `<button id='reset' style='color: white; background-color: black;'>ResetGame</button>`;
+}
 
 const playgamepage = data => {
 	let div = document.getElementById('main');
@@ -157,7 +168,12 @@ const playgamepage = data => {
 					${headert()}
 					<div id='game' class="container" align='center' style='text-align: left;'>
 						<div class='row' style='float: right; font-size: 20'>
-							<button id='reset' style='color: white; background-color: black;'>ResetGame</button>
+							<div class='col'>
+								${data.resettable ? renderreset() : ''}
+							</div>
+							<div class='col'>
+								<button id='leavegame' style='color: white; background-color: black; float:right;'>LeaveGame</button>
+							</div>
 						</div>
 						<div class="row" style='font-size:20;'>
 							<span>Admin:</span>
@@ -207,8 +223,13 @@ const playgamepage = data => {
 					</div>
 					${footert()}
 	`;
-	document.getElementById('reset').addEventListener('click', e=>{
-		socket.emit('resetgame');
+	if (document.getElementById('reset')){
+		document.getElementById('reset').addEventListener('click', e=>{
+			socket.emit('resetgame');
+		});
+	}
+	document.getElementById('leavegame').addEventListener('click', e=>{
+		socket.emit('leavegame');
 	});
 }
 
