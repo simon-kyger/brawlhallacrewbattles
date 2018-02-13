@@ -205,41 +205,39 @@ const updategame = (socket, data) =>{
 	let username = getusername(socket);
 	//if captains pick
 	if (game.phase){
-		if (game.picking == username){
-			if((data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
+		if((game.picking !== username) || (data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
+			return;
+		if(data.movement == 'left'){
+			if ((data.container =='team1') || (game.picking == game.captains[1]))
 				return;
-			if(data.movement == 'left'){
-				if ((data.container =='team1') || (game.picking == game.captains[1]))
-					return;
-				if ((data.container =='team2') && (game.picking == game.captains[0]))
-					return;
-				if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
-					game.team2.splice(game.team2.indexOf(data.selected), 1);
-					game.inbound.push(data.selected);
-				} else {
-					game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-					game.team1.push(data.selected);
-				}
-			}
-			if(data.movement == 'right'){
-				if((data.container == 'team2') || (game.picking == game.captains[0]))
-					return;
-				if ((data.container =='team1') && (game.picking == game.captains[1]))
-					return;
-				if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
-					game.team1.splice(game.team1.indexOf(data.selected), 1);
-					game.inbound.push(data.selected);
-				} else {
-					game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-					game.team2.push(data.selected);
-				}
-			}
-
-			if (game.captains.indexOf(username)){
-				game.picking = game.captains[0];
+			if ((data.container =='team2') && (game.picking == game.captains[0]))
+				return;
+			if(data.selected == game.team2[game.team2.indexOf(data.selected)]){
+				game.team2.splice(game.team2.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
 			} else {
-				game.picking = game.captains[1];
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team1.push(data.selected);
 			}
+		}
+		if(data.movement == 'right'){
+			if((data.container == 'team2') || (game.picking == game.captains[0]))
+				return;
+			if ((data.container =='team1') && (game.picking == game.captains[1]))
+				return;
+			if(data.selected == game.team1[game.team1.indexOf(data.selected)]){
+				game.team1.splice(game.team1.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			} else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team2.push(data.selected);
+			}
+		}
+
+		if (game.captains.indexOf(username)){
+			game.picking = game.captains[0];
+		} else {
+			game.picking = game.captains[1];
 		}
 	} else if ((game.admin == username) && !game.phase){
 		//admin control only
