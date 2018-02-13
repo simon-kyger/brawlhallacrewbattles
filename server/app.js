@@ -436,6 +436,12 @@ const register = (socket, db, data) => {
 		});
 		return;
 	}
+	if ((data.username.indexOf("<") > -1) || (data.username.indexOf(">") > -1) || (data.username.indexOf('&') > -1)){
+		socket.emit('usercreated', {
+			msg: `Characters <, >, and & are not permitted in usernames. Choose a new name.`
+		});
+		return;
+	}
 
 	let users = db.collection('users');
 	
