@@ -59,18 +59,6 @@ const checkifadmin = socket => {
 	return false;
 }
 
-//returns boolean
-const checkifcaptain = socket => {
-	let username = getusername(socket);
-	for (let i=0; i<games.length; i++){
-		let game = games[i];
-		if((game.captains[0] == username) || (game.captains[1] == username)){
-			return true;
-		}
-	}
-	return false;
-}
-
 //void
 const joingame = (socket, data) => {
 	let username = getusername(socket);
@@ -416,8 +404,8 @@ const login = (socket, db, data) => {
 			});
 			return;
 		}
-		for(let users in sessions){
-			if(sessions[users] == sessions[res.username]){
+		for(let user in sessions){
+			if(users == res.username){
 				socket.emit('usercreated',{
 					msg: `User is already signed in.`
 				});
