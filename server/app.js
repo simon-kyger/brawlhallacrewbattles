@@ -405,7 +405,7 @@ const login = (socket, db, data) => {
 			return;
 		}
 		for(let user in sessions){
-			if(users == res.username){
+			if(user == res.username){
 				socket.emit('usercreated',{
 					msg: `User is already signed in.`
 				});
