@@ -1,0 +1,2 @@
+start cmd.exe /k "cd C:\Program Files\MongoDB\Server\3.6\bin\ & mongod.exe --dbpath "C:\Users\Simon Kyger\Desktop\brawlhallacrewbattle\server\data""
+start cmd.exe /k "cd C:\Users\Simon Kyger\Desktop\brawlhallacrewbattle\server & npm start"
