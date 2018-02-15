@@ -37,3 +37,7 @@ Verify the server echos back:
 Server listening on port: 8080 
 Mongodb is listening on port: 27017
 ```
+
+## To do this even easier:
+
+In the root directory of this project is a launcher.bat which you can edit to direct all of the above if you change the file paths.  I left my original development paths in for those who hate batch programming.
