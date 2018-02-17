@@ -4,6 +4,7 @@ const path = require(`path`);
 const mongo = require(`mongodb`).MongoClient;
 const ioserver = require(`socket.io`);
 const sanitize = require(`mongo-sanitize`);
+const bcrypt = require('bcrypt');
 
 const app = express();
 const server = http.Server(app);
@@ -397,10 +398,10 @@ const login = (socket, db, data) => {
 
 	let query = sanitize(data);
 
-	users.findOne({username: query.username, password: query.password}).then(res=>{
+	users.findOne({username: query.username}).then(res=>{
 		if(!res){
 			socket.emit('usercreated', {
-				msg: `Unknown user and/or password combination.`
+				msg: `Unknown user.`
 			});
 			return;
 		}
@@ -412,13 +413,25 @@ const login = (socket, db, data) => {
 				return;
 			}
 		}
-		sessions[res.username] = socket;
-		socket.emit('loginsuccess', {
-			username: res.username,
-			wins: res.wins,
-			losses: res.losses
-		});
-		socket.emit('gamesupdate', games);
+
+		const a = query.username + query.password;
+		const h = res.password;
+
+		bcrypt.compare(a, h, (err, res2)=>{
+			if (res2){
+				sessions[res.username] = socket;
+				socket.emit('loginsuccess', {
+					username: res.username,
+					wins: res.wins,
+					losses: res.losses
+				});
+				socket.emit('gamesupdate', games);
+			} else {
+				socket.emit('usercreated', {
+					msg: `Bad password.`
+				});
+			}
+		})
 	})
 }
 
@@ -455,15 +468,19 @@ const register = (socket, db, data) => {
 			return;
 		}
 
-		users.insert({username: query.username, password: query.password, wins: 0, losses: 0}, (err, user)=>{
-			if (err){
+		const h = query.username + query.password;
+
+		bcrypt.hash(h, 13, (err, hash)=>{
+			users.insert({username: query.username, password: hash, wins: 0, losses: 0}, (err, user)=>{
+				if (err){
+					socket.emit('usercreated', {
+						msg: `DB is having issues. Please contact admin.`
+					});
+					return;
+				}
 				socket.emit('usercreated', {
-					msg: `DB is having issues. Please contact admin.`
+					msg: `User ${query.username} has been created.`
 				});
-				return;
-			}
-			socket.emit('usercreated', {
-				msg: `User ${query.username} has been created.`
 			});
 		});
 	})
