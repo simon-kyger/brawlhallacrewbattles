@@ -14,11 +14,11 @@ const dbport = process.env.DBPORT || 27017;
 let sessions = {};
 let games = [];
 
-app.use('/', express.static(path.join(__dirname, '../client')));
+app.use('/', express.static(path.join(__dirname, '/client')));
 server.listen(serverport);
 console.log(`Server listening on port: ${serverport}`);
 
-mongo.connect(`mongodb://localhost:${dbport}/server`, (err, database)=>{
+mongo.connect(`mongodb://localhost:${dbport}`, (err, database)=>{
 	if (err) throw err;
 
 	console.log(`Mongodb is listening on port: ${dbport}`);
