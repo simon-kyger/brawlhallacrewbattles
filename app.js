@@ -12,14 +12,13 @@ const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
 process.env.NODE_ENV = 'production';
-const dburl = process.env.DBURL || config.get('admin.dbconfig.host');
+const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host');
 let sessions = {};
 let games = [];
 
 app.use('/', express.static(path.join(__dirname, '/client')));
 server.listen(serverport);
 console.log(`Server listening on port: ${serverport}`);
-
 mongo.connect(dburl, (err, database)=>{
 	if (err) throw err;
 
