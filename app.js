@@ -461,11 +461,9 @@ const register = (socket, db, data) => {
 	let users = db.collection('users');
 	
 	let query = sanitize(data);
-
-	users.findOne({username: query.username}).then(res=>{
-		const h = query.username + query.password;
-
-		bcrypt.hash(h, 13, (err, hash)=>{
+	const h = query.username + query.password;
+	bcrypt.hash(h, 13, (err, hash)=>{
+		users.findOne({username: query.username}).then(res=>{
 			if (res){
 				socket.emit('usercreated', {
 					msg: `User: ${query.username} already exists.`
@@ -484,5 +482,5 @@ const register = (socket, db, data) => {
 				});
 			});
 		});
-	})
+	});
 }
