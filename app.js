@@ -24,7 +24,7 @@ mongo.connect(dburl, (err, database)=>{
 
 	console.log(`Mongodb is listening.`);
 
-	let db = database.db('brawlhallacrewdb');
+	let db = database;
 	io.sockets.on('connection', socket =>{
 		init(socket);
 		socket.on('login', (data)=>login(socket, db, data));
