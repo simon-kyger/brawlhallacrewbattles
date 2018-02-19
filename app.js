@@ -22,7 +22,7 @@ console.log(`Server listening on port: ${serverport}`);
 mongo.connect(dburl, (err, database)=>{
 	if (err) throw err;
 
-	console.log(`Mongodb is listening on port: ${dbport}`);
+	console.log(`Mongodb is listening.`);
 
 	let db = database.db('brawlhallacrewdb');
 	io.sockets.on('connection', socket =>{
