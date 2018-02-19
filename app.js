@@ -464,14 +464,15 @@ const register = (socket, db, data) => {
 
 	users.findOne({username: query.username}).then(res=>{
 		const h = query.username + query.password;
-		bcrypt.hash(h, 13, (err, hash, res)=>{
+
+		bcrypt.hash(h, 13, (err, hash)=>{
 			if (res){
 				socket.emit('usercreated', {
 					msg: `User: ${query.username} already exists.`
 				});
 				return;
 			}
-			users.insert({username: query.username, password: hash, wins: 0, losses: 0}, (err, user)=>{
+			users.insert({username: query.username, password: hash}, (err, user)=>{
 				if (err){
 					socket.emit('usercreated', {
 						msg: `DB is having issues. Please contact admin.`
