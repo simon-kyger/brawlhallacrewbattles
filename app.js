@@ -12,7 +12,7 @@ const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
 process.env.NODE_ENV = 'production';
-const dburl = config.get('admin.dbconfig.host');
+const dburl = process.env.DBURL || config.get('admin.dbconfig.host');
 let sessions = {};
 let games = [];
 
