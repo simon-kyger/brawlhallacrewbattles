@@ -11,8 +11,9 @@ const app = express();
 const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
-const dbname = process.env.DBNAME || config.get('admin.dbconfig.name');
-const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host');
+const dbport = process.env.DBPORT || 27017;
+const dbname = process.env.DBNAME || config.get('admin.dbconfig.name') || `brawlhallacrewdb`;
+const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host') || `mongodb://localhost:${dbport}`;
 let sessions = {};
 let games = [];
 

@@ -1,43 +1,41 @@
 # brawlhallacrewbattle
 
-## Getting Started - DB and Server Setup - Windows7/10:
+Hosted @ https://brawlhallacrews.herokuapp.com/
 
-1. Change the following test if your version of mongodb does not match!!!
-2. Also, feel free to make the DB a service, if you're into that kind of stupidity.
+## Getting Started - DB and Server Setup - Windows7/10:
 
 ##### Determine where to store the data
 
 1. arg1 (before the --dbpath) is the path to your mongo installation. 
 2. arg2 (or piped to dbpath) is the place you want to store your data.
 
-Example in a command prompt: 
+Example in a command prompt *(exchange PATH with the path to your local repository of this project, and change 3.6 to the version of your mongod.exe install)*: 
 
 ```
-"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "c:\Users\{yourusername}\Desktop\brawlhallacrewbattle\server\data"
-```
-
-##### Launch DB
-
-Example in a command prompt:
-
-```
-command: "C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe"
+"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "PATH\brawlhallacrewbattle\server\data"
 ```
 
 ##### Launching Node With DB:
 
-Example in a command prompt:
-
 ```
-npm start
+node app.js
 ```
 
-Verify the server echos back: 
+Other notes while launching:
+
+There are 4 process.env values that need to be supplied as follows:
+
 ```
-Server listening on port: 8080 
-Mongodb is listening on port: 27017
+const serverport = process.env.PORT || 8080;
+const dbport = process.env.DBPORT || 27017;
+const dbname = process.env.DBNAME || config.get('admin.dbconfig.name') || `brawlhallacrewdb`;
+const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host') || `mongodb://localhost:${dbport}`;
 ```
 
-## To do this even easier:
+The serverport and dbport dont really matter too much, but the dbname and dburl do.
 
-In the root directory of this project is a launcher.bat which you can edit to direct all of the above if you change the file paths.  I left my original development paths in for those who hate batch programming.
+dburl should be smart enough to run if running the db locally to work.
+
+dbname is a bit tricky because it is utilizing some of mongodb's new client schema. I opted not to go with mongoose on this project and that may be the reason as I'm not 100% sure if this is set up right or in best practice.
+
+If you want to deploy this to heroku, you're going to need to set these environment variables up manually, which is also going to require git bash.
