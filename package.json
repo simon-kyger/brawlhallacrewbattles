@@ -18,6 +18,7 @@
   "homepage": "https://github.com/simon-kyger/brawlhallacrewbattle#readme",
   "dependencies": {
     "bcrypt": "^1.0.3",
+    "express": "^4.16.2",
     "md5": "^2.2.1",
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^3.0.2",
