@@ -22,7 +22,7 @@ Example in a command prompt *(exchange PATH with the path to your local reposito
 node app.js
 ```
 
-Other notes while launching:
+##### Other notes while launching or configuration for Heroku:
 
 There are 4 process.env values that need to be supplied as follows:
 
@@ -35,8 +35,10 @@ const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host') || `m
 
 The serverport and dbport dont really matter too much, but the dbname and dburl do.
 
-dburl should be smart enough to run if running the db locally to work.
+dburl should be smart enough to run if running the db locally to work. This is basically setting the url path to the database, and if the db is being run locally, the last condition will fire.  if running on heroku, you'll need to set the environment variable in the dashboard.
 
-dbname is a bit tricky because it is utilizing some of mongodb's new client schema. I opted not to go with mongoose on this project and that may be the reason as I'm not 100% sure if this is set up right or in best practice.
+dbname is a bit tricky because it is utilizing some of mongodb's new client schema. This is basically setting the databases name itself.  If you create your project on heroku, you may be assigned a db name, so in order to get this to work, navigate to the dashboard and create a new environment variable called DBNAME and assign it respectively.
 
-If you want to deploy this to heroku, you're going to need to set these environment variables up manually, which is also going to require git bash.
+Once again -- If you want to deploy this to heroku, you're going to need to set these environment variables up manually on the destination server!
+
+This will without a doubt require git bash, as well as heroku cli.  See here for more info: https://devcenter.heroku.com/articles/heroku-cli
