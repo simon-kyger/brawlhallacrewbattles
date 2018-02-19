@@ -24,7 +24,7 @@ mongo.connect(dburl, (err, database)=>{
 
 	console.log(`Mongodb is listening.`);
 
-	let db = database;
+	let db = database.db('heroku_hqw54p7l');
 	io.sockets.on('connection', socket =>{
 		init(socket);
 		socket.on('login', (data)=>login(socket, db, data));
