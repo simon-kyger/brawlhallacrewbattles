@@ -11,7 +11,7 @@ const app = express();
 const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
-process.env.NODE_ENV = 'production';
+const dbname = process.env.DBNAME || config.get('admin.dbconfig.name');
 const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host');
 let sessions = {};
 let games = [];
@@ -24,7 +24,7 @@ mongo.connect(dburl, (err, database)=>{
 
 	console.log(`Mongodb is listening.`);
 
-	let db = database.db('heroku_hqw54p7l');
+	let db = database.db(dbname);
 	io.sockets.on('connection', socket =>{
 		init(socket);
 		socket.on('login', (data)=>login(socket, db, data));

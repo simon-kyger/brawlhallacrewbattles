@@ -1,6 +1,7 @@
 {
 	"admin": {
 		"dbconfig": {
+			"name": "",
 			"host": ""
 		}
 	}
