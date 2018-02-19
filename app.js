@@ -5,12 +5,14 @@ const mongo = require(`mongodb`).MongoClient;
 const ioserver = require(`socket.io`);
 const sanitize = require(`mongo-sanitize`);
 const bcrypt = require('bcrypt');
+const config = require('config');
 
 const app = express();
 const server = http.Server(app);
 const io = ioserver(server);
 const serverport = process.env.PORT || 8080;
-const dbport = process.env.DBPORT || 27017;
+process.env.NODE_ENV = 'production';
+const dburl = config.get('admin.dbconfig.host');
 let sessions = {};
 let games = [];
 
@@ -18,7 +20,7 @@ app.use('/', express.static(path.join(__dirname, '/client')));
 server.listen(serverport);
 console.log(`Server listening on port: ${serverport}`);
 
-mongo.connect(`mongodb://localhost:${dbport}`, (err, database)=>{
+mongo.connect(dburl, (err, database)=>{
 	if (err) throw err;
 
 	console.log(`Mongodb is listening on port: ${dbport}`);
