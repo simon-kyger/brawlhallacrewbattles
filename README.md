@@ -6,13 +6,14 @@ Hosted @ https://brawlhallacrews.herokuapp.com/
 
 ##### Determine where to store the data
 
-1. arg1 (before the --dbpath) is the path to your mongo installation. 
-2. arg2 (or piped to dbpath) is the place you want to store your data.
+1. Create a directory in the PATH, such as /data
+2. arg1 (before the --dbpath) is the path to your mongo installation. 
+3. arg2 (or piped to dbpath) is the place you want to store your data.
 
 Example in a command prompt *(exchange PATH with the path to your local repository of this project, and change 3.6 to the version of your mongod.exe install)*: 
 
 ```
-"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "PATH\brawlhallacrewbattle\server\data"
+"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "PATH\brawlhallacrewbattle\data"
 ```
 
 ##### Launching Node With DB:
