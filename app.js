@@ -470,7 +470,7 @@ const register = (socket, db, data) => {
 				});
 				return;
 			}
-			users.insert({username: query.username, password: hash}, (err, user)=>{
+			users.insert({username: query.username, password: hash, wins: 0, losses: 0}, (err, user)=>{
 				if (err){
 					socket.emit('usercreated', {
 						msg: `DB is having issues. Please contact admin.`
