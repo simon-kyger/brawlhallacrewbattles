@@ -12,7 +12,7 @@
 	}
 
 	const footert = () => {
-		return `<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7);'>
+		return `<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;'>
 					<div class="row">
 						<div class="col">
 							Powered with:
@@ -26,7 +26,8 @@
 						<div class="col" style='text-align: right;'>
 							Fork me on 
 							<a href='https://www.github.com' target='_blank'><img src='img/github.png'></a>
-							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>: https://github.com/simon-kyger/brawlhallacrewbattle</a>
+							@
+							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
 						</div>
 					</div>
 				</div>
