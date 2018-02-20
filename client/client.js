@@ -72,6 +72,15 @@
 							${footert()}
 						</div>
 		`;
+		$('#header').hide().fadeIn(1000);
+		$('#footer').hide();
+		$('#login').hide();
+		$('#brawlvid').hide();
+		setTimeout(()=>{
+			$('#footer').fadeIn(1500)
+			$('#login').fadeIn(2000)
+			$('#brawlvid').fadeIn(2000);
+		}, 1000);
 
 		document.getElementById('loginlink').addEventListener('click', e=>{
 			e.preventDefault();
