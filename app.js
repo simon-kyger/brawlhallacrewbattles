@@ -121,7 +121,7 @@ const leavegame = socket => {
 			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
 		}
 		for (let i=0; i<game.team2.length; i++){
-			sessions[game.team2[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team2[i]].emit('loginsuccess', {username: game.team2[i]});
 			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
 		}
 		for (let i=0; i<games.length; i++){
@@ -329,7 +329,7 @@ const disconnect = socket => {
 			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
 		}
 		for (let i=0; i<game.team2.length; i++){
-			sessions[game.team2[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team2[i]].emit('loginsuccess', {username: game.team2[i]});
 			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
 		}
 		for (let i=0; i<games.length; i++){
