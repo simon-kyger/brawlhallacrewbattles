@@ -2,6 +2,8 @@
 
 Hosted @ https://brawlhallacrews.herokuapp.com/
 
+Found a bug? Report it here *please*: https://github.com/simon-kyger/brawlhallacrewbattle/issues
+
 ## Getting Started - DB and Server Setup - Windows7/10:
 
 ##### Determine where to store the data
