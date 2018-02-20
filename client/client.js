@@ -12,7 +12,7 @@
 	}
 
 	const footert = () => {
-		return `<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray;'>
+		return `<div id='footer' style='position: fixed; width: 100%; bottom: 0; font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.6);'>
 					<div>
 						Powered with:
 						<a href='https://nodejs.org/en/' target='_blank'><img src='img/node.png' style='margin-left:4;'></a>
@@ -34,8 +34,7 @@
 		document.body.style.background = `black`;
 		document.body.style.color = `white`;
 		document.body.style.fontSize = `40`;
-		document.body.style.overflowx = `hidden`;
-		document.body.style.overflowy = 'scroll';
+		document.body.style.overflow = `hidden`;
 		let div = document.createElement(`div`);
 		document.body.appendChild(div);
 		div.id = `main`;
@@ -48,22 +47,32 @@
 		div.innerHTML = '';
 		div.style.width = `100%`;
 		div.style.height = `100%`;
-		div.innerHTML = `${headert()}
-						<div id='login' align='center' style='font-size: 20;'>
-							<form style='margin: 0; margin-top: 120;'>
-								<div>Username: </div>
-								<input id='username' style='color: black;'></input>
-								<div style='padding-top:10;'>Password: </div>
-								<input id='password' type='password' style='color: black;'></input>
-								<div style='margin-top: 10;'>
-									<a id='loginlink' href='#'>Login</a>
-									<a id='registerlink' href='#' style='margin-left: 124;'>Register</a>
+		div.innerHTML = `<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
+							<iframe id="brawlvid" style="position: absolute; top: 0; left: 0; width:100%; height:100%; z-index:-1;" src="https://www.youtube.com/embed/nNF9cPPSwUQ?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
+							${headert()}
+							<div class="container">
+								<div class="row">
+									<div class="col"></div>
+									<div id='login' class="col" align="center" style='font-size: 20;'>
+										<form style='margin: 0;margin-top: 140;background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
+											<input id='username' style='color: black; background-color: rgba(0,0,0,.4);'></input>
+											<div style='padding-top:10; text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Password: </div>
+											<input id='password' type='password' style='color: black; background-color: rgba(0,0,0,.4);'></input>
+											<div style='margin-top: 10; text-shadow: 3px 3px 10px #000; background-color: rgba(0,0,0,.4);'>
+												<a id='loginlink' href='#'>Login</a>
+												<a id='registerlink' href='#' style='margin-left: 100;'>Register</a>
+											</div>
+											<div id='success'></div>
+										</form>
+									</div>
+									<div class="col"></div>
 								</div>
-								<div id='success'></div>
-							</form>
+							</div>
+							${footert()}
 						</div>
-						${footert()}
 		`;
+
 		document.getElementById('loginlink').addEventListener('click', e=>{
 			e.preventDefault();
 			const username = document.getElementById('username').value;
