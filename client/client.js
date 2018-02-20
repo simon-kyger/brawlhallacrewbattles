@@ -34,6 +34,19 @@
 		`;
 	}
 
+	const loginvid = () => {
+		let vidids = [
+			`nNF9cPPSwUQ?`, //pugsy wilson
+			`cunWS-05m9s?`, //stevenator doppy
+			`tQ_Yq7gj42s?start=7`, //isidroo rbrenz
+			`LUK5AtT1URY?start=3`, //lilcapped sillygobi
+			`-SX2mbt4-f4?start=7`, //ldz crockie
+		];
+		const randvid = vidids[Math.floor(Math.random()*(vidids.length))];
+		return `<iframe id="brawlvid" style="position: absolute; top: 0; left: 0; width:100%; height:100%; z-index:-1; opacity:.7;" src="https://www.youtube.com/embed/${randvid}&controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
+		`;					
+	}
+
 	//onload
 	const rendermain = () => {
 		document.body.style.margin = 0;
@@ -54,7 +67,7 @@
 		div.style.width = `100%`;
 		div.style.height = `100%`;
 		div.innerHTML = `<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
-							<iframe id="brawlvid" style="position: absolute; top: 0; left: 0; width:100%; height:100%; z-index:-1; opacity:.7;" src="https://www.youtube.com/embed/nNF9cPPSwUQ?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
+							${loginvid()}
 							${headert()}
 							<div class="container">
 								<div class="row">
