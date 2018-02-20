@@ -27,7 +27,7 @@ mongo.connect(dburl, (err, database)=>{
 
 	let db = database.db(dbname);
 	io.sockets.on('connection', socket =>{
-		init(socket);
+		socket.on('init', ()=>init(socket));
 		socket.on('login', (data)=>login(socket, db, data));
 		socket.on('register', (data)=>register(socket, db, data));
 		socket.on('disconnect', ()=>disconnect(socket));
@@ -42,7 +42,7 @@ mongo.connect(dburl, (err, database)=>{
 
 //void
 const init = socket =>{
-	//
+	socket.emit('loginpage');
 }
 
 //returns string
@@ -86,6 +86,7 @@ const joingame = (socket, data) => {
 	}
 }
 
+//returns obj
 const findgame = socket => {
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
@@ -104,6 +105,7 @@ const findgame = socket => {
 	}
 }
 
+//void
 const leavegame = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
@@ -155,6 +157,7 @@ const leavegame = socket => {
 	io.sockets.emit('gamesupdate', games);
 }
 
+//void
 const resetgame = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
@@ -303,74 +306,54 @@ const creategame = socket => {
 
 //void
 const disconnect = socket => {
-	//game cleanup
+	let game = findgame(socket);
 	let username = getusername(socket);
-	let ad = false;
-	for (let i=0; i<games.length; i++){
-		let game = games[i];
-		if (game.admin == username){
-			games.splice(i, 1);
-			for (let k=0; k<game.team1.length; k++){
-				sessions[game.team1[k]].emit('loginsuccess', {username: game.team1[k]});
-				sessions[game.team1[k]].emit('notification', `Game admin ${game.admin} left the game.`);
-			}
-			for (let k=0; k<game.team2.length; k++){
-				sessions[game.team2[k]].emit('loginsuccess', {username: game.team2[k]});
-				sessions[game.team2[k]].emit('notification', `Game admin ${game.admin} left the game.`);
-			}
-			for (let k=0; k<game.inbound.length; k++){
-				sessions[game.inbound[k]].emit('loginsuccess', {username: game.inbound[k]});
-				sessions[game.inbound[k]].emit('notification', `Game admin ${game.admin} left the game.`);
-			}
-			io.sockets.emit('gamesupdate', games);
-			break;
+	if (game.admin ==username){
+		for (let i=0; i<game.inbound.length; i++){
+			sessions[game.inbound[i]].emit('loginsuccess', {username: game.inbound[i]});
+			sessions[game.inbound[i]].emit('notification', `Game admin ${game.admin} left the game.`);
 		}
-		for(let j=0; j<game.team1.length; j++){
-			if (game.team1[j] == username){
-				game.team1.splice(j, 1);
-				for (let k=0; k<game.team1.length; k++){
-					sessions[game.team1[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.team2.length; k++){
-					sessions[game.team2[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.inbound.length; k++){
-					sessions[game.inbound[k]].emit('gameupdate', game);
-				}
-				break;
+		for (let i=0; i<game.team1.length; i++){
+			sessions[game.team1[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
+		}
+		for (let i=0; i<game.team2.length; i++){
+			sessions[game.team2[i]].emit('loginsuccess', {username: game.team1[i]});
+			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
+		}
+		for (let i=0; i<games.length; i++){
+			if (games[i]==game){
+				games.splice(i, 1);
 			}
 		}
-		for(let j=0; j<game.team2.length; j++){
-			if (game.team2[j] == username){
-				game.team2.splice(j, 1);
-				for (let k=0; k<game.team1.length; k++){
-					sessions[game.team1[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.team2.length; k++){
-					sessions[game.team2[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.inbound.length; k++){
-					sessions[game.inbound[k]].emit('gameupdate', game);
-				}
-				break;
+	} else {
+		for (let i=0; i<game.inbound.length; i++){
+			if (game.inbound[i]==username){
+				game.inbound.splice(i, 1);
 			}
 		}
-		for(let j=0; j<game.inbound.length; j++){
-			if (game.inbound[j] == username){
-				game.inbound.splice(j, 1);
-				for (let k=0; k<game.team1.length; k++){
-					sessions[game.team1[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.team2.length; k++){
-					sessions[game.team2[k]].emit('gameupdate', game);
-				}
-				for (let k=0; k<game.inbound.length; k++){
-					sessions[game.inbound[k]].emit('gameupdate', game);
-				}
-				break;
+		for (let i=0; i<game.team1.length; i++){
+			if (game.team1[i]==username){
+				game.team1.splice(i, 1);
 			}
+		}
+		for (let i=0; i<game.team2.length; i++){
+			if (game.team2[i]==username){
+				game.team2.splice(i, 1);
+			}
+		}
+		for (let j=0; j<game.inbound.length; j++){
+			sessions[game.inbound[j]].emit('gameupdate', game);
+		}
+		for (let j=0; j<game.team1.length; j++){
+			sessions[game.team1[j]].emit('gameupdate', game);
+		}
+		for (let j=0; j<game.team2.length; j++){
+			sessions[game.team2[j]].emit('gameupdate', game);
 		}
 	}
+
+	io.sockets.emit('gamesupdate', games);
 
 	//session cleanup
 	for(let user in sessions){

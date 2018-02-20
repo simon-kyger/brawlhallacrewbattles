@@ -39,7 +39,7 @@
 		let div = document.createElement(`div`);
 		document.body.appendChild(div);
 		div.id = `main`;
-		loginpage();
+		socket.emit('init');
 	}
 	document.addEventListener('DOMContentLoaded', rendermain);
 
@@ -84,7 +84,7 @@
 		})
 	}
 
-	//post server events
+	socket.on('loginpage', ()=>loginpage());
 	socket.on('welcomeheader', data => welcomeheader(data));
 	socket.on('loginfailure', data => {
 		document.getElementById('success').innerHTML = data.msg;
