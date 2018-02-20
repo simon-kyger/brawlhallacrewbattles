@@ -6,6 +6,7 @@ const ioserver = require(`socket.io`);
 const sanitize = require(`mongo-sanitize`);
 const bcrypt = require('bcrypt');
 const config = require('config');
+const sslredirect = require('heroku-ssl-redirect');
 
 const app = express();
 const server = http.Server(app);
@@ -17,6 +18,7 @@ const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host') || `m
 let sessions = {};
 let games = [];
 
+app.use(sslredirect());
 app.use('/', express.static(path.join(__dirname, '/client')));
 server.listen(serverport);
 console.log(`Server listening on port: ${serverport}`);
