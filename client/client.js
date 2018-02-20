@@ -56,9 +56,9 @@
 									<div id='login' class="col" align="center" style='font-size: 20;'>
 										<form style='margin: 0;margin-top: 140;background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
 											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
-											<input id='username' style='color: black; background-color: rgba(0,0,0,.4);'></input>
+											<input id='username' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
 											<div style='padding-top:10; text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Password: </div>
-											<input id='password' type='password' style='color: black; background-color: rgba(0,0,0,.4);'></input>
+											<input id='password' type='password' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
 											<div style='margin-top: 10; text-shadow: 3px 3px 10px #000; background-color: rgba(0,0,0,.4);'>
 												<a id='loginlink' href='#'>Login</a>
 												<a id='registerlink' href='#' style='margin-left: 100;'>Register</a>
