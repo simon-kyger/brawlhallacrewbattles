@@ -199,6 +199,14 @@
 		return `<button id='reset' style='color: white; background-color: black;'>ResetGame</button>`;
 	}
 
+	const renderaddremovestock = (team) => {
+		return `<div id="addremovestock" class="col">
+					<button id="addstock${team}" style='color: white; background-color: black; width:40;'>+</button>
+					<button id="removestock${team}" style='color: white; background-color: black; width:40;'>-</button>
+				</div>
+		`;
+	}
+
 	const playgamepage = data => {
 		let div = document.getElementById('main');
 		div.innerHTML = '';
@@ -241,22 +249,33 @@
 							</div>
 							<div class="row">
 								<div class="col">
-									Team1:
-									<div style='border-bottom: 1px solid white; width: 50%'></div>
+									<div>Team1</div>
+									<div class="row" style="font-size: 20;">
+										<div class="col">Stocks</div> 
+										<div id='t1stocks' class="col">${data.game.team1stocks}</div>
+										${data.resettable ? renderaddremovestock('t1') : ''}
+									</div>
+									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
 								<div class="col">
-									Inbound:
-									<div style='border-bottom: 1px solid white; width: 50%'></div>
+									<div>Inbound:</div>
+									<div style="font-size: 20;">&nbsp;</div>
+									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
 								<div class="col">
-									Team2:
-									<div style='border-bottom: 1px solid white; width: 50%'></div>
+									<div>Team2</div>
+									<div class="row" style="font-size: 20;">
+										<div class="col">Stocks</div> 
+										<div id='t2stocks' class="col">${data.game.team2stocks}</div>
+										${data.resettable ? renderaddremovestock('t2') : ''}
+									</div>
+									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
 							</div>
 							<div id='allplayers' class='row' style="max-height: 800px; max-width: 1600px; overflow: auto;">
 								<ul id='team1' class="col" style='list-style-type:none;'>
 								</ul>
-								<ul id='inbound' class="col" style='list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:400;'>
+								<ul id='inbound' class="col" style='list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:300;'>
 								</ul>
 								<ul id='team2' class="col" style='list-style-type:none;'>
 								</ul>
@@ -264,6 +283,28 @@
 						</div>
 						${footert()}
 		`;
+		if (document.getElementById('addremovestock')){
+			document.getElementById('addstockt1').addEventListener('click', e=>{
+				socket.emit('stockchange', {
+					team1stocks: parseInt(document.getElementById('t1stocks').innerHTML)+1
+				});
+			});
+			document.getElementById('addstockt2').addEventListener('click', e=>{
+				socket.emit('stockchange', {
+					team2stocks: parseInt(document.getElementById('t2stocks').innerHTML)+1
+				});
+			});
+			document.getElementById('removestockt1').addEventListener('click', e=>{
+				socket.emit('stockchange', {
+					team1stocks: parseInt(document.getElementById('t1stocks').innerHTML)-1
+				});
+			});
+			document.getElementById('removestockt2').addEventListener('click', e=>{
+				socket.emit('stockchange', {
+					team2stocks: parseInt(document.getElementById('t2stocks').innerHTML)-1
+				});
+			});
+		}
 		if (document.getElementById('reset')){
 			document.getElementById('reset').addEventListener('click', e=>{
 				socket.emit('resetgame');
@@ -273,6 +314,13 @@
 			socket.emit('leavegame');
 		});
 	}
+
+	socket.on('stockchange', data=>{
+		if(document.getElementById('game')){
+			document.getElementById('t1stocks').innerHTML = data.team1;
+			document.getElementById('t2stocks').innerHTML = data.team2;
+		}
+	})
 
 	socket.on('gameupdate', data=>{
 		if (document.getElementById('game')){

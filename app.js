@@ -33,12 +33,12 @@ mongo.connect(dburl, (err, database)=>{
 		socket.on('login', (data)=>login(socket, db, data));
 		socket.on('register', (data)=>register(socket, db, data));
 		socket.on('disconnect', ()=>disconnect(socket));
-		socket.on('getgames', ()=>getgames(socket));
 		socket.on('creategame', ()=>creategame(socket));
 		socket.on('joingame', (data)=>joingame(socket, data));
 		socket.on('updategame', (data)=>updategame(socket, data));
 		socket.on('resetgame', ()=>resetgame(socket));
 		socket.on('leavegame', ()=>leavegame(socket));
+		socket.on('stockchange', (data)=>stockchange(socket, data));
 	});
 });
 
@@ -169,8 +169,10 @@ const resetgame = socket => {
 		admin: username,
 		captains: [],
 		team1: [],
+		team1stocks: 10,
 		inbound: [],
 		team2: [],
+		team2stocks: 10,
 		phase: false,
 		picking: username,
 	};
@@ -289,8 +291,10 @@ const creategame = socket => {
 		admin: username,
 		captains: [],
 		team1: [],
+		team1stocks: 10,
 		inbound: [username],
 		team2: [],
+		team2stocks: 10,
 		phase: false,
 		picking: username,
 	};
@@ -477,4 +481,31 @@ const register = (socket, db, data) => {
 			});
 		});
 	});
+}
+
+const stockchange = (socket, data) => {
+	if (!checkifadmin(socket))
+		return;
+	let user = getusername(socket);
+	let game = findgame(socket);
+	if (data.team1stocks !== undefined) game.team1stocks = data.team1stocks;
+	if (data.team2stocks !== undefined) game.team2stocks = data.team2stocks;
+	for (let i=0; i<game.inbound.length; i++){
+		sessions[game.inbound[i]].emit('stockchange', {
+			team1: game.team1stocks,
+			team2: game.team2stocks
+		})
+	}
+	for (let i=0; i<game.team1.length; i++){
+		sessions[game.team1[i]].emit('stockchange', {
+			team1: game.team1stocks,
+			team2: game.team2stocks
+		})
+	}
+	for (let i=0; i<game.team2.length; i++){
+		sessions[game.team2[i]].emit('stockchange', {
+			team1: game.team1stocks,
+			team2: game.team2stocks
+		})
+	}
 }
