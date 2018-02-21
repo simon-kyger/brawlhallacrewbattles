@@ -23,7 +23,7 @@
 						</div>
 						<div class="col" style='text-align: center;'>
 							<img src='img/discord.png'>
-							<a href='https://discord.gg/N2q82hb'>https://discord.gg/N2q82hb</a>
+							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
 						</div>
 						<div class="col" style='text-align: right;'>
 							Fork me on 
