@@ -111,6 +111,7 @@ const findgame = socket => {
 const leavegame = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
+	if (!game) return;
 	if (game.admin ==username){
 		for (let i=0; i<game.inbound.length; i++){
 			sessions[game.inbound[i]].emit('loginsuccess', {username: game.inbound[i]});

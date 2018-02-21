@@ -225,15 +225,15 @@
 								</div>
 							</div>
 							<div class="row" style='font-size:20;'>
-								<span>Admin:</span>
+								<span>Admin: &nbsp;</span>
 								<span id='admin'>${data.game.admin}</span>
 							</div>
 							<div class="row" style='font-size:20;'>
-								<span>Captains:</span>
+								<span>Captains: &nbsp;</span>
 								<span id='captains'></span>
 							</div>
 							<div class="row" style='font-size:20;'>
-								<span>Currently picking:</span>
+								<span>Currently picking: &nbsp;</span>
 								<span id='picking'></span>
 							</div>
 							<div class="row">
@@ -255,12 +255,10 @@
 										<div id='t1stocks' class="col">${data.game.team1stocks}</div>
 										${data.resettable ? renderaddremovestock('t1') : ''}
 									</div>
-									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
 								<div class="col">
 									<div>Inbound:</div>
 									<div style="font-size: 20;">&nbsp;</div>
-									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
 								<div class="col">
 									<div>Team2</div>
@@ -269,8 +267,12 @@
 										<div id='t2stocks' class="col">${data.game.team2stocks}</div>
 										${data.resettable ? renderaddremovestock('t2') : ''}
 									</div>
-									<div style='border-bottom: 1px solid white; width: 100%'></div>
 								</div>
+							</div>
+							<div class='row'>
+								<div class='col' style='border-bottom: 1px solid white; width: 90%'></div>
+								<div class='col' style='border-bottom: 1px solid white; width: 90%'></div>
+								<div class='col' style='border-bottom: 1px solid white; width: 90%'></div>
 							</div>
 							<div id='allplayers' class='row' style="max-height: 800px; max-width: 1600px; overflow: auto;">
 								<ul id='team1' class="col" style='list-style-type:none;'>
@@ -326,6 +328,14 @@
 		if (document.getElementById('game')){
 			document.getElementById('admin').innerHTML = data.admin;
 			document.getElementById('picking').innerHTML = data.picking;
+
+			setInterval(()=> {
+			    $('#picking').animate({
+			        opacity: 1.0
+			    }, 500).animate({
+			        opacity: .2
+			    });
+			}, 1000);
 
 			document.getElementById('captains').innerHTML = '';
 			for(let i=0; i<data.captains.length; i++){
