@@ -411,19 +411,19 @@ const login = (socket, db, data) => {
 			});
 			return;
 		}
-		for(let user in sessions){
-			if(user == res.username){
-				socket.emit('usercreated',{
-					msg: `User is already signed in.`
-				});
-				return;
-			}
-		}
 
 		const a = query.username + query.password;
 		const h = res.password;
 
 		bcrypt.compare(a, h, (err, res2)=>{
+			for(let user in sessions){
+				if(user == res.username){
+					socket.emit('usercreated',{
+						msg: `User is already signed in.`
+					});
+					return;
+				}
+			}
 			if (res2){
 				sessions[res.username] = socket;
 				socket.emit('loginsuccess', {
