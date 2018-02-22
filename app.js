@@ -288,6 +288,10 @@ const creategame = socket => {
 	if (checkifadmin(socket))
 		return;
 	const username = getusername(socket);
+	if (!username){
+		console.log(socket);
+		console.log('sessions:',sessions)
+	}
 	const game = {
 		admin: username,
 		captains: [],
