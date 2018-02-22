@@ -55,6 +55,7 @@ const getusername = socket => {
 //returns boolean
 const checkifadmin = socket => {
 	let username = getusername(socket);
+	if (!username) return false;
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
 		if (game.admin == username){
@@ -67,6 +68,7 @@ const checkifadmin = socket => {
 //void
 const joingame = (socket, data) => {
 	let username = getusername(socket);
+	if (!username) return;
 	for (let i=0; i<games.length; i++){
 		let game = games[i];
 		if(game.admin == data){
@@ -111,6 +113,7 @@ const findgame = socket => {
 const leavegame = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
+	if (!game || !username) return;
 	if (game.admin ==username){
 		for (let i=0; i<game.inbound.length; i++){
 			sessions[game.inbound[i]].emit('loginsuccess', {username: game.inbound[i]});
@@ -163,6 +166,7 @@ const leavegame = socket => {
 const resetgame = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
+	if (!game || !username) return;
 	if (game.admin !== username)
 		return;
 	const ngame = {
@@ -201,6 +205,7 @@ const resetgame = socket => {
 const updategame = (socket, data) =>{
 	let game = findgame(socket);
 	let username = getusername(socket);
+	if (!game || !username) return;
 	//if captains pick
 	if (game.phase){
 		if((game.picking !== username) || (data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
@@ -287,6 +292,7 @@ const creategame = socket => {
 	if (checkifadmin(socket))
 		return;
 	const username = getusername(socket);
+	if (!username) return;
 	const game = {
 		admin: username,
 		captains: [],
@@ -314,7 +320,7 @@ const creategame = socket => {
 const disconnect = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
-	if (!game){
+	if (!game || !username)
 		for(let user in sessions){
 			if (socket == sessions[user]){
 				delete sessions[user];

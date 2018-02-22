@@ -386,8 +386,4 @@
 		}
 	});
 
-	socket.on("disconnect", function(){
-		loginpage();
-	});
-
 })();
