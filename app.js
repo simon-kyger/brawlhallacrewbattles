@@ -411,6 +411,9 @@ const login = (socket, db, data) => {
 			});
 			return;
 		}
+		socket.emit('usercreated', {
+			msg: `Logging in...`
+		});
 
 		const a = query.username + query.password;
 		const h = res.password;
