@@ -320,7 +320,7 @@ const creategame = socket => {
 const disconnect = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
-	if (!game || !username)
+	if (!game || !username){
 		for(let user in sessions){
 			if (socket == sessions[user]){
 				delete sessions[user];
