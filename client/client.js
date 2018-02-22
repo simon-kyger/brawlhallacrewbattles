@@ -103,6 +103,13 @@
 			$('#brawlvid').fadeIn(3000);
 		}, 1000);
 
+		document.getElementById("password").addEventListener("keyup", function(event) {
+			event.preventDefault();
+			if (event.keyCode === 13)
+				document.getElementById("loginlink").click();
+		});
+
+		//TODO: debounce these
 		document.getElementById('loginlink').addEventListener('click', e=>{
 			e.preventDefault();
 			const username = document.getElementById('username').value;
