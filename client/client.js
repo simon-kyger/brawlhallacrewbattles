@@ -90,12 +90,12 @@
 											<input id='username' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
 											<div style='padding-top:10; text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Password: </div>
 											<input id='password' type='password' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
-											<div class='row'>
+											<div class='row' style='padding-top: 10px;'>
 												<div class='col'>
-													<a id='loginlink' class='btn btn-default' href='#'>Login</a>
+													<a id='loginlink' class='btn btn-lg' href='#'>Login</a>
 												</div>
 												<div class='col'>
-													<a id='registerlink' class='btn btn-default' href='#'>Register</a>
+													<a id='registerlink' class='btn btn-lg' href='#'>Register</a>
 												</div>
 											</div>
 											<div class='row'>
