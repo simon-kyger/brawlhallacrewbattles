@@ -155,7 +155,7 @@
 	const gamespage = data => {
 		let div = document.getElementById('main');
 		div.innerHTML = `<div class='container' align='center' style='width: 750;'>
-							<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
+							<div id='loggedin' style='font-size: 20; position:absolute;'>Welcome back ${data.username}</div>
 							${headert()}
 							<div id='intermediate' style='font-size: 20;'></div>
 							<div style='width: 38%; text-align: left;'>
@@ -224,9 +224,9 @@
 		div.style.width = `100%`;
 		div.style.height = `100%`;
 		div.innerHTML = ``;
-		div.innerHTML = `<div id='loggedin' style='font-size: 20; float: left;'>Welcome back ${data.username}</div>
-						${headert()}
-						<div id='game' class='container' align='center' style='text-align: left;'>
+		div.innerHTML = `<div id='game' class='container' align='center' style='text-align: left; min-width:500;'>
+							<div id='loggedin' style='font-size: 20; position: absolute;'>Welcome back ${data.username}</div>
+							${headert()}
 							<div class='row' style='float: right; font-size: 20'>
 								<div class='col'>
 									${data.resettable ? renderreset() : ''}
