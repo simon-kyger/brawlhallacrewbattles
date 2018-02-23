@@ -319,11 +319,8 @@ const creategame = socket => {
 //void
 const disconnect = socket => {
 	let game = findgame(socket);
-	let username = getusername(socket);
-	if (game || !username){
+	if (game)
 		leavegame(socket)
-	}
-
 
 	//session cleanup
 	for(let user in sessions){
