@@ -4,7 +4,7 @@
 
 	//static templates
 	const headert = () => {
-		return `<div class='container'>
+		return `<div class='container' id='header'>
 					<div class='row'>
 						<div class='col-12'>
 							<a href='https://www.brawlhalla.com' target='_blank'>
@@ -22,7 +22,7 @@
 	}
 
 	const footert = () => {
-		return `<footer class='container-fluid w-100'>
+		return `<footer class='container-fluid w-100' id='footer'>
 					<div class='row' style='font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;'>
 						<div class='col'>
 							Powered with:
