@@ -83,7 +83,7 @@
 							${headert()}
 							<main class='container' style='flex:1;'>
 								<div class='row'>
-									<div class='col-xs-12 col-md-4 offset-md-4' id='login' align='center' style='font-size: 20; min-width: 300px; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
 										<form>
 											<div style='text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Username: </div>
 											<input id='username' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
