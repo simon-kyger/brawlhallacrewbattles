@@ -320,61 +320,10 @@ const creategame = socket => {
 const disconnect = socket => {
 	let game = findgame(socket);
 	let username = getusername(socket);
-	if (!game || !username){
-		for(let user in sessions){
-			if (socket == sessions[user]){
-				delete sessions[user];
-				break;
-			}
-		}
-		return;
-	}
-	if (game.admin ==username){
-		for (let i=0; i<game.inbound.length; i++){
-			sessions[game.inbound[i]].emit('loginsuccess', {username: game.inbound[i]});
-			sessions[game.inbound[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
-		for (let i=0; i<game.team1.length; i++){
-			sessions[game.team1[i]].emit('loginsuccess', {username: game.team1[i]});
-			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
-		for (let i=0; i<game.team2.length; i++){
-			sessions[game.team2[i]].emit('loginsuccess', {username: game.team2[i]});
-			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
-		for (let i=0; i<games.length; i++){
-			if (games[i]==game){
-				games.splice(i, 1);
-			}
-		}
-	} else {
-		for (let i=0; i<game.inbound.length; i++){
-			if (game.inbound[i]==username){
-				game.inbound.splice(i, 1);
-			}
-		}
-		for (let i=0; i<game.team1.length; i++){
-			if (game.team1[i]==username){
-				game.team1.splice(i, 1);
-			}
-		}
-		for (let i=0; i<game.team2.length; i++){
-			if (game.team2[i]==username){
-				game.team2.splice(i, 1);
-			}
-		}
-		for (let j=0; j<game.inbound.length; j++){
-			sessions[game.inbound[j]].emit('gameupdate', game);
-		}
-		for (let j=0; j<game.team1.length; j++){
-			sessions[game.team1[j]].emit('gameupdate', game);
-		}
-		for (let j=0; j<game.team2.length; j++){
-			sessions[game.team2[j]].emit('gameupdate', game);
-		}
+	if (game || !username){
+		leavegame(socket)
 	}
 
-	io.sockets.emit('gamesupdate', games);
 
 	//session cleanup
 	for(let user in sessions){
