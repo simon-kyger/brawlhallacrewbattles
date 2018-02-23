@@ -24,23 +24,22 @@
 	const footert = () => {
 		return `<footer class='container-fluid w-100' id='footer'>
 					<div class='row' style='font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;'>
-						<div class='col'>
+						<div class='col-sm-8 col-md-4' style='white-space:nowrap;'>
 							Powered with:
 							<a href='https://nodejs.org/en/' target='_blank'><img src='img/node.png' style='margin-left:4;'></a>
 							<a href='https://socket.io/' target='_blank'><img src='img/socketio.png'></a>
 							<a href='https://www.heroku.com/' target='_blank'><img src='img/heroku.png'></a>
 							<a href='https://www.mongodb.com/' target='_blank'><img src='img/mongo.png' style='position: relative; bottom:4;'></a>
 						</div>
-						<div class='col' style='text-align: center;'>
+						<div class='col-sm-6 col-md-4 text-md-center'>
 							<img src='img/discord.png'>
 							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
 						</div>
-						<div class='col' style='text-align: right;'>
-							Fork me on 
+						<div class='col-md-4 text-md-right'>
 							<a href='https://www.github.com' target='_blank'><img src='img/github.png'></a>
-							@
 							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
 						</div>
+						<div class="w-100"></div>
 					</div>
 				</footer>
 		`;
