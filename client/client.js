@@ -61,7 +61,7 @@
 		document.body.style.background = `black`;
 		document.body.style.color = `white`;
 		document.body.style.fontSize = `40`;
-		document.body.style.overflow = `hidden`;
+
 		let div = document.createElement(`div`);
 		document.body.appendChild(div);
 		div.id = `main`;
@@ -78,21 +78,27 @@
 							${loginvid()}
 							${headert()}
 							<div class='row'>
-								<div class='col'></div>
-								<div class='col' id='login' align='center' style='font-size: 20;'>
-									<form style='margin: 0;margin-top: 140;background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+								<div class='col-xs-12 col-md-4 offset-md-4' id='login' align='center' style='font-size: 20; min-width: 300px; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+									<form>
 										<div style='text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Username: </div>
 										<input id='username' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
 										<div style='padding-top:10; text-shadow: 0px 0px 8px rgba(255,255,255,.8)'>Password: </div>
 										<input id='password' type='password' style='color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);'></input>
-										<div style='margin-top: 10; text-shadow: 3px 3px 10px #000; background-color: rgba(0,0,0,.4);'>
-											<a id='loginlink' href='#'>Login</a>
-											<a id='registerlink' href='#' style='margin-left: 100;'>Register</a>
+										<div class='row'>
+											<div class='col'>
+												<a id='loginlink' href='#'>Login</a>
+											</div>
+											<div class='col'>
+												<a id='registerlink' href='#'>Register</a>
+											</div>
 										</div>
-										<div id='success'></div>
+										<div class='row'>
+											<div class='col'>
+												<div id='success'></div>
+											</div>
+										</div>
 									</form>
 								</div>
-								<div class='col'></div>
 							</div>
 							${footert()}
 						</div>
