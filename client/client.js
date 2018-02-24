@@ -155,7 +155,7 @@
 		document.getElementById("success").innerHTML = data.msg;
 	});
 	socket.on("loginsuccess", data => gamespage(data));
-
+	socket.on("verif", data => err(data));
 	const welcomeheader = data => {
 		document.getElementById("loginheadert").innerHTML = data.msg;
 	}
@@ -163,7 +163,12 @@
 	const loginfailure = data => {
 		document.getElementById("loginheadert").innerHTML = data.msg;
 	}
-
+	
+	const err = data => {
+		if(document.getElementById('error')){
+			document.getElementById('error').innerHTML = data.msg;
+		}
+	}
 	const gamespage = data => {
 		let div = document.getElementById("main");
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
@@ -265,10 +270,6 @@
 				let privacy = ((document.getElementById('priv').value === "Private") ? true : false);
 				let pwd = document.getElementById('pwd').value;
 
-				$('#controlModal').modal('hide');
-				$('body').removeClass('modal-open');
-				$('.modal-backdrop').remove();
-
 				if (privacy) {
 					socket.emit('creategame', {
 						room: document.getElementById('room').value,
@@ -293,11 +294,15 @@
 			let selectedgame = document.getElementById("games").options[document.getElementById("games").options.selectedIndex].value;
 			selectedgame = selectedgame.substring(0, selectedgame.length - 7);
 			socket.emit("joingame", selectedgame);
+			
 		});
 	}
 
 	socket.on("joingame", data => {
 		playgamepage(data);
+		$('#controlModal').modal('hide');
+		$('body').removeClass('modal-open');
+		$('.modal-backdrop').remove();
 	});
 
 	socket.on("notification", data => {
@@ -311,7 +316,7 @@
 			document.getElementById("games").innerHTML = "";
 			for (let i = 0; i < data.length; i++) {
 				let game = data[i];
-				document.getElementById("games").innerHTML += `<option class="list-group-item" style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}"s Game</option>`;
+				document.getElementById("games").innerHTML += `<option class="list-group-item" style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</option>`;
 			}
 		}
 	});
@@ -356,6 +361,10 @@
 					<div class="row" style="font-size:20;">
 						<span>Currently picking: &nbsp;</span>
 						<span id="picking"></span>
+					</div>
+					<div class="row" style="font-size:20;">
+						<span>Room: &nbsp;</span>
+						<span id="roomNumber">${data.game.room}</span>
 					</div>
 					<div class="row">
 						<div class="col"></div>

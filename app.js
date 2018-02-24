@@ -52,6 +52,16 @@ const getusername = socket => {
 	return Object.keys(sessions).find(key => sessions[key] === socket);
 }
 
+const checkRoomNumExists = roomnumber => {
+    for (let i=0; i<games.length; i++){
+        let game = games[i];
+        if (game.room == roomnumber){
+            return true
+        }
+    }
+    return false;
+}
+
 //returns boolean
 const checkifadmin = socket => {
 	let username = getusername(socket);
@@ -293,6 +303,10 @@ const creategame = (socket,data) => {
 		return;
 	const username = getusername(socket);
 	if (!username) return;
+	if(checkRoomNumExists(data.room)){
+		socket.emit('verif', { msg: "A crew battle already uses this room number." });
+		return;
+	} else {
 	const game = {
 		admin: username,
 		captains: [],
@@ -303,6 +317,7 @@ const creategame = (socket,data) => {
 		team2stocks: 10,
 		phase: false,
 		picking: username,
+		room: data.room,	
 		private: (data.private) ? true : false
 		// Do something with the password
 	};
@@ -316,6 +331,7 @@ const creategame = (socket,data) => {
 	setTimeout(()=>{
 		socket.emit('gameupdate', game)
 	}, 0);
+  }
 }
 
 //void
