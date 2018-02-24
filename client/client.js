@@ -193,29 +193,20 @@
 		})
 	}
 
-	socket.on("loginpage", () => loginpage());
-	socket.on("welcomeheader", data => welcomeheader(data));
-	socket.on("loginfailure", data => {
-		document.getElementById("success").innerHTML = data.msg;
+	socket.on("welcomeheader", data => {
+		document.getElementById("loginheadert").innerHTML = data.msg;
 	});
 	socket.on("usercreated", data => {
 		document.getElementById("success").innerHTML = data.msg;
 	});
-	socket.on("loginsuccess", data => gamespage(data));
-	socket.on("verif", data => errnotif(data));
-	const welcomeheader = data => {
-		document.getElementById("loginheadert").innerHTML = data.msg;
-	}
-
-	const loginfailure = data => {
-		document.getElementById("loginheadert").innerHTML = data.msg;
-	}
-	
-	const errnotif = data => {
+	socket.on("verif", data => {
 		if(document.getElementById('error')){
 			document.getElementById('error').innerHTML = data.msg;
 		}
-	}
+	});
+	socket.on("loginpage", () => loginpage());
+	socket.on("loginsuccess", data => gamespage(data));
+	
 	const gamespage = data => {
 		let div = document.getElementById("main");
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
