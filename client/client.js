@@ -22,15 +22,22 @@
 	}
 
 	const footert = () => {
+<<<<<<< HEAD
 		return `<footer class="container-fluid w-100" id="footer">
 					<div class="row" style="font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;">
 						<div class="col">
+=======
+		return `<footer class='container-fluid w-100' id='footer'>
+					<div class='row' style='font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;'>
+						<div class='col-sm-8 col-md-4' style='white-space:nowrap;'>
+>>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
 							Powered with:
 							<a href="https://nodejs.org/en/" target="_blank"><img src="img/node.png" style="margin-left:4;"></a>
 							<a href="https://socket.io/" target="_blank"><img src="img/socketio.png"></a>
 							<a href="https://www.heroku.com/" target="_blank"><img src="img/heroku.png"></a>
 							<a href="https://www.mongodb.com/" target="_blank"><img src="img/mongo.png" style="position: relative; bottom:4;"></a>
 						</div>
+<<<<<<< HEAD
 						<div class="col" style="text-align: center;">
 							<img src="img/discord.png">
 							<a href="https://discord.gg/N2q82hb" target="_blank">https://discord.gg/N2q82hb</a>
@@ -40,7 +47,17 @@
 							<a href="https://www.github.com" target="_blank"><img src="img/github.png"></a>
 							@
 							<a href="https://github.com/simon-kyger/brawlhallacrewbattle" target="_blank">https://github.com/simon-kyger/brawlhallacrewbattle</a>
+=======
+						<div class='col-sm-6 col-md-4 text-md-center'>
+							<img src='img/discord.png'>
+							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
 						</div>
+						<div class='col-md-4 text-md-right'>
+							<a href='https://www.github.com' target='_blank'><img src='img/github.png'></a>
+							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
+>>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
+						</div>
+						<div class="w-100"></div>
 					</div>
 				</footer>
 		`;
@@ -82,9 +99,15 @@
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${loginvid()}
 							${headert()}
+<<<<<<< HEAD
 							<main class="container" style="flex:1;">
 								<div class="row">
 									<div class="col-xs-12 col-md-4 offset-md-4" id="login" align="center" style="font-size: 20; min-width: 300px; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)">
+=======
+							<main class='container' style='flex:1;'>
+								<div class='row'>
+									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+>>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
 										<form>
 											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
 											<input id="username" style="color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
