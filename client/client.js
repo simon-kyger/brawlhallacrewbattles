@@ -347,81 +347,80 @@
 		div.style.height = `100%`;
 		div.innerHTML = ``;
 		div.innerHTML = `<div id="game" class="container" align="center" style="text-align: left; min-width:500;">
-					<div id="loggedin" style="font-size: 20; position: absolute;">Welcome back ${data.username}</div>
-					${headert()}
-					<div class="row" style="float: right; font-size: 20">
-						<div class="col">
-							${data.resettable ? renderreset() : ""}
-						</div>
-						<div class="col">
-							<button id="leavegame" style="color: white; background-color: black; float:right;">LeaveGame</button>
-						</div>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>${privacy} lobby</span>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>Room: &nbsp;</span>
-						<span id="roomNumber">${data.game.room}</span>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>Admin: &nbsp;</span>
-						<span id="admin">${data.game.admin}</span>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>Captains: &nbsp;</span>
-						<span id="captains"></span>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>Currently picking: &nbsp;</span>
-						<span id="picking"></span>
-					</div>
-					<div class="row">
-						<div class="col"></div>
-						<div class="col">
-							<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
-						</div>
-						<div class="col"></div>
-						<div class="col">
-							<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
-						</div>
-						<div class="col"></div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<div>Team1</div>
-							<div class="row" style="font-size: 20;">
-								<div class="col">Stocks</div> 
-								<div id="t1stocks" class="col">${data.game.team1stocks}</div>
-								${data.resettable ? renderaddremovestock("t1") : ""}
+							<div id="loggedin" style="font-size: 20; position: absolute;">Welcome back ${data.username}</div>
+							${headert()}
+							<div class="row" style="float: right; font-size: 20">
+								<div class="col">
+									${data.resettable ? renderreset() : ""}
+								</div>
+								<div class="col">
+									<button id="leavegame" style="color: white; background-color: black; float:right;">LeaveGame</button>
+								</div>
 							</div>
-						</div>
-						<div class="col">
-							<div>Inbound:</div>
-							<div style="font-size: 20;">&nbsp;</div>
-						</div>
-						<div class="col">
-							<div>Team2</div>
-							<div class="row" style="font-size: 20;">
-								<div class="col">Stocks</div> 
-								<div id="t2stocks" class="col">${data.game.team2stocks}</div>
-								${data.resettable ? renderaddremovestock("t2") : ""}
+							<div class="row" style="font-size:20;">
+								<span>${privacy} lobby</span>
 							</div>
+							<div class="row" style="font-size:20;">
+								<span>Room: &nbsp;</span>
+								<span id="roomNumber">${data.game.room}</span>
+							</div>
+							<div class="row" style="font-size:20;">
+								<span>Admin: &nbsp;</span>
+								<span id="admin">${data.game.admin}</span>
+							</div>
+							<div class="row" style="font-size:20;">
+								<span>Captains: &nbsp;</span>
+								<span id="captains"></span>
+							</div>
+							<div class="row" style="font-size:20;">
+								<span>Currently picking: &nbsp;</span>
+								<span id="picking"></span>
+							</div>
+							<div class="row">
+								<div class="col"></div>
+								<div class="col">
+									<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
+								</div>
+								<div class="col"></div>
+								<div class="col">
+									<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
+								</div>
+								<div class="col"></div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div>Team1</div>
+									<div class="row" style="font-size: 20;">
+										<div class="col">Stocks</div> 
+										<div id="t1stocks" class="col">${data.game.team1stocks}</div>
+										${data.resettable ? renderaddremovestock("t1") : ""}
+									</div>
+								</div>
+								<div class="col">
+									<div>Inbound:</div>
+									<div style="font-size: 20;">&nbsp;</div>
+								</div>
+								<div class="col">
+									<div>Team2</div>
+									<div class="row" style="font-size: 20;">
+										<div class="col">Stocks</div> 
+										<div id="t2stocks" class="col">${data.game.team2stocks}</div>
+										${data.resettable ? renderaddremovestock("t2") : ""}
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
+								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
+								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
+							</div>
+							<div id="allplayers" class="row" style="max-height: 800px; max-width: 1600px; overflow: auto;">
+								<ul id="team1" class="col" style="list-style-type:none;"></ul>
+								<ul id="inbound" class="col" style="list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:300;"></ul>
+								<ul id="team2" class="col" style="list-style-type:none;"></ul>
+							</div>
+							<div class="row"></div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-						<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-						<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-					</div>
-					<div id="allplayers" class="row" style="max-height: 800px; max-width: 1600px; overflow: auto;">
-						<ul id="team1" class="col" style="list-style-type:none;"></ul>
-						<ul id="inbound" class="col" style="list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:300;"></ul>
-						<ul id="team2" class="col" style="list-style-type:none;"></ul>
-					</div>
-					<div class="row">
-					</div>
-				</div>
 		`;
 		if (document.getElementById("addremovestock")) {
 			document.getElementById("addstockt1").addEventListener("click", e => {
