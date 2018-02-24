@@ -325,10 +325,12 @@
                 let game = data[i];
                 let div = `<div class="ga" id='usergame${i}' style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
                 document.getElementById("games").innerHTML += div;
-                document.getElementById(`usergame${i}`).addEventListener('click', e=>{
-                   console.log("clicked on" + e.target.id);
-                })
             }
+            document.querySelectorAll('.ga').forEach((e)=>{
+            	e.addEventListener('click', (e2)=>{
+            		console.log('elementid', e2.target.id)
+            	})
+            })
         }
     });
 
