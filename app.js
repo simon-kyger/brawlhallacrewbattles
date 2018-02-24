@@ -33,7 +33,7 @@ mongo.connect(dburl, (err, database)=>{
 		socket.on('login', (data)=>login(socket, db, data));
 		socket.on('register', (data)=>register(socket, db, data));
 		socket.on('disconnect', ()=>disconnect(socket));
-		socket.on('creategame', ()=>creategame(socket));
+		socket.on('creategame', (data)=>creategame(socket, data));
 		socket.on('joingame', (data)=>joingame(socket, data));
 		socket.on('updategame', (data)=>updategame(socket, data));
 		socket.on('resetgame', ()=>resetgame(socket));
@@ -288,7 +288,7 @@ const updategame = (socket, data) =>{
 }
 
 //void
-const creategame = socket => {
+const creategame = (socket,data) => {
 	if (checkifadmin(socket))
 		return;
 	const username = getusername(socket);
@@ -303,6 +303,8 @@ const creategame = socket => {
 		team2stocks: 10,
 		phase: false,
 		picking: username,
+		private: (data.private) ? true : false
+		// Do something with the password
 	};
 	games.push(game);
 	socket.emit('joingame', {
