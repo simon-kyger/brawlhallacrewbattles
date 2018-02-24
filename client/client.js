@@ -22,32 +22,15 @@
 	}
 
 	const footert = () => {
-<<<<<<< HEAD
-		return `<footer class="container-fluid w-100" id="footer">
-					<div class="row" style="font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;">
-						<div class="col">
-=======
 		return `<footer class='container-fluid w-100' id='footer'>
 					<div class='row' style='font-size:12; color:gray; box-shadow: 0px 0px 50px 10px rgba(0,0,0,.7); background-color: rgba(0,0,0,.7); border-top: 1px solid black;'>
 						<div class='col-sm-8 col-md-4' style='white-space:nowrap;'>
->>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
 							Powered with:
 							<a href="https://nodejs.org/en/" target="_blank"><img src="img/node.png" style="margin-left:4;"></a>
 							<a href="https://socket.io/" target="_blank"><img src="img/socketio.png"></a>
 							<a href="https://www.heroku.com/" target="_blank"><img src="img/heroku.png"></a>
 							<a href="https://www.mongodb.com/" target="_blank"><img src="img/mongo.png" style="position: relative; bottom:4;"></a>
 						</div>
-<<<<<<< HEAD
-						<div class="col" style="text-align: center;">
-							<img src="img/discord.png">
-							<a href="https://discord.gg/N2q82hb" target="_blank">https://discord.gg/N2q82hb</a>
-						</div>
-						<div class="col" style="text-align: right;">
-							Fork me on 
-							<a href="https://www.github.com" target="_blank"><img src="img/github.png"></a>
-							@
-							<a href="https://github.com/simon-kyger/brawlhallacrewbattle" target="_blank">https://github.com/simon-kyger/brawlhallacrewbattle</a>
-=======
 						<div class='col-sm-6 col-md-4 text-md-center'>
 							<img src='img/discord.png'>
 							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
@@ -55,7 +38,6 @@
 						<div class='col-md-4 text-md-right'>
 							<a href='https://www.github.com' target='_blank'><img src='img/github.png'></a>
 							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
->>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
 						</div>
 						<div class="w-100"></div>
 					</div>
@@ -99,15 +81,9 @@
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${loginvid()}
 							${headert()}
-<<<<<<< HEAD
-							<main class="container" style="flex:1;">
-								<div class="row">
-									<div class="col-xs-12 col-md-4 offset-md-4" id="login" align="center" style="font-size: 20; min-width: 300px; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)">
-=======
 							<main class='container' style='flex:1;'>
 								<div class='row'>
 									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
->>>>>>> 12d32d22ce31ac9cef990210e3f2430affc21c17
 										<form>
 											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
 											<input id="username" style="color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
@@ -190,83 +166,82 @@
 
 	const gamespage = data => {
 		let div = document.getElementById("main");
-		div.innerHTML = `
-				<wrapper class="d-flex flex-column" style="min-height:100vh;">
-<div id="loggedin" style="font-size: 20; position:absolute;">Welcome back ${data.username}</div>
-${headert()}
-<main class="container" style="flex:1;">
-<div class="row">
-	<div class="col md-4 offset-md-4">
-		<div id="intermediate" style="font-size: 20;"></div>
-	</div>
-</div>
-<div class="row">
-	<div class="col"></div>
-	<div class="col-md-8">Active</div>
-</div>
-<div class="row">
-	<div class="col-md-4 col-xs-12">
-		<ul id="createjoin" class="list-group">
-			<li id="creategame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
-				Create
-			</li>
-			<li id="joingame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;">
-				Join
-			</li>
-		</ul>
-	</div>
-	<div class="col-md-8">
-		<form>
-			<select id="games" size="2" style="font-size:20; background-color: black; min-height:400px; width:100%;">
-</select>
-		</form </div>
-	</div>
-	<div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="color: black;">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title text-center" id="label" style="margin: 0 auto;">Room settings</h4>
-				</div>
-				<div class="grid">
-						<div class="modal-body" style="font-size: 15px;" id="m-body">
-						<div class="row">
-						<div class="col">
-							<div class="input-group">
+		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
+							<div id="loggedin" style="font-size: 20; position:absolute;">Welcome back ${data.username}</div>
+							${headert()}
+							<main class="container" style="flex:1;">
+							<div class="row">
+								<div class="col md-4 offset-md-4">
+									<div id="intermediate" style="font-size: 20;"></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col"></div>
+								<div class="col-md-8">Active</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-xs-12">
+									<ul id="createjoin" class="list-group">
+										<li id="creategame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
+											Create
+										</li>
+										<li id="joingame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;">
+											Join
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-8">
+									<form>
+										<select id="games" size="2" style="font-size:20; background-color: black; min-height:400px; width:100%;">
+							</select>
+									</form </div>
+								</div>
+								<div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="color: black;">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title text-center" id="label" style="margin: 0 auto;">Room settings</h4>
+											</div>
+											<div class="grid">
+													<div class="modal-body" style="font-size: 15px;" id="m-body">
+													<div class="row">
+													<div class="col">
+														<div class="input-group">
 
-								<div class="input-group-prepend">
-									<label class="input-group-text" for="inputGroupSelect01" for="room">Room #</label>
-								</div>
-								<input type="text" class="form-control" aria-label="Room#" placeholder="#00000" id="room" maxlength="5">
-							</div>
-							<div class="row error">
-								<div class="col-md-12">
-									<p class="text-danger" id="error"></p>
-								</div>
-							</div>
-						</div>
-						<div class="col">
-							<input type="password" class="form-control" name="pwd" placeholder="Password" id="pwd" disabled>
-						</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<select id="priv" class="selectpicker form-control" data-live-search="true" title="Privacy">
-									<option>Public</option>
-									<option>Private</option>
-									</select> 
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-						<button type="button" class="btn btn-success" id="creating">Create</button>
-					</div>
-				</div>
-			</div>
-		</div>
-</main>
-${footert()}
-</wrapper>
+															<div class="input-group-prepend">
+																<label class="input-group-text" for="inputGroupSelect01" for="room">Room #</label>
+															</div>
+															<input type="text" class="form-control" aria-label="Room#" placeholder="#00000" id="room" maxlength="5">
+														</div>
+														<div class="row error">
+															<div class="col-md-12">
+																<p class="text-danger" id="error"></p>
+															</div>
+														</div>
+													</div>
+													<div class="col">
+														<input type="password" class="form-control" name="pwd" placeholder="Password" id="pwd" disabled>
+													</div>
+													</div>
+													<div class="row">
+														<div class="col-md-12">
+															<select id="priv" class="selectpicker form-control" data-live-search="true" title="Privacy">
+																<option>Public</option>
+																<option>Private</option>
+																</select> 
+														</div>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+													<button type="button" class="btn btn-success" id="creating">Create</button>
+												</div>
+											</div>
+										</div>
+									</div>
+							</main>
+							${footert()}
+							</wrapper>
 		`;
 
 		document.getElementById('priv').addEventListener("change", c => {
