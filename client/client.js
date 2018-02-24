@@ -297,12 +297,8 @@
 				document.getElementById('error').innerHTML = "Please, specify a valid room number.";
 			}
 		});
-		document.getElementById('joingame').addEventListener("click", e => {
-			let selectedgame = document.getElementById("games").options[document.getElementById("games").options.selectedIndex].value;
-			selectedgame = selectedgame.substring(0, selectedgame.length - 7);
-			socket.emit("joingame", selectedgame);
-			
-		});
+
+		//joinprivate game goes here
 	}
 
 	socket.on("joingame", data => {
@@ -326,9 +322,11 @@
                 let div = `<div class="ga" id='usergame${i}' style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
                 document.getElementById("games").innerHTML += div;
             }
-            document.querySelectorAll('.ga').forEach((e)=>{
-            	e.addEventListener('click', (e2)=>{
-            		console.log('elementid', e2.target.id)
+            document.querySelectorAll('.ga').forEach((domelem)=>{
+            	domelem.addEventListener('click', (e)=>{
+            		let selectedgame = e.target.textContent;
+					selectedgame = selectedgame.substring(0, selectedgame.length - 7);
+					socket.emit("joingame", selectedgame);
             	})
             })
         }
