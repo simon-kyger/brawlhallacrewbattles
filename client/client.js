@@ -196,10 +196,13 @@
 							</ul>
 						</div>
 						<div class="col-md-8">
-							<form>
-								<select id="games" size="2" style="font-size:20; background-color: black; min-height:400px; width:100%;">
-					</select>
-							</form </div>
+						<style>
+						.ga:hover {
+							cursor: pointer;
+						}
+						</style>
+						<div id="games" style="font-size:20; background-color: black; min-height:400px; width:100%;border-color: white;">
+						</div>
 						</div>
 						<div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="color: black;">
 							<div class="modal-dialog" role="document">
@@ -261,8 +264,8 @@
 		});
 
 		document.getElementById('creating').addEventListener("click", e => {
-			var room = document.getElementById('room');
-			var reg = /\b\d{5}\b/; // Verify that the room number is 5 digits
+			let room = document.getElementById('room');
+			let reg = /\b\d{5}\b/; // Verify that the room number is 5 digits, \d = [0-9]
 
 			if (reg.test(room.value)) {
 
@@ -271,11 +274,16 @@
 				let pwd = document.getElementById('pwd').value;
 
 				if (privacy) {
-					socket.emit('creategame', {
+					let regPwd = /^[a-z0-9]+$/i; // Verify that password contains Alphanumeric characters
+					if(regPwd.test(pwd)){
+						socket.emit('creategame', {
 						room: document.getElementById('room').value,
 						private: true,
 						password: pwd
 					});
+					} else {
+						document.getElementById('error').innerHTML = "Use only letters and numbers in your password.";
+					}
 				}
 				else {
 					socket.emit('creategame', {
@@ -289,7 +297,6 @@
 				document.getElementById('error').innerHTML = "Please, specify a valid room number.";
 			}
 		});
-
 		document.getElementById('joingame').addEventListener("click", e => {
 			let selectedgame = document.getElementById("games").options[document.getElementById("games").options.selectedIndex].value;
 			selectedgame = selectedgame.substring(0, selectedgame.length - 7);
@@ -311,15 +318,19 @@
 		}
 	});
 
-	socket.on("gamesupdate", data => {
-		if (document.getElementById("games")) {
-			document.getElementById("games").innerHTML = "";
-			for (let i = 0; i < data.length; i++) {
-				let game = data[i];
-				document.getElementById("games").innerHTML += `<option class="list-group-item" style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</option>`;
-			}
-		}
-	});
+ socket.on("gamesupdate", data => {
+        if (document.getElementById("games")) {
+            document.getElementById("games").innerHTML = "";
+            for (let i = 0; i < data.length; i++) {
+                let game = data[i];
+                let div = `<div class="ga" id='usergame${i}' style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
+                document.getElementById("games").innerHTML += div;
+                document.getElementById(`usergame${i}`).addEventListener('click', e=>{
+                   console.log("clicked on" + document.getElementById(`usergame${i}`));
+                })
+            }
+        }
+    });
 
 	const renderreset = () => {
 		return `<button id="reset" style="color: white; background-color: black;">ResetGame</button>`;
@@ -337,6 +348,7 @@
 		let div = document.getElementById("main");
 		div.innerHTML = "";
 		div.style.width = `100%`;
+		let privacy = (data.game.priv) ? "Private" : "Public";
 		div.style.height = `100%`;
 		div.innerHTML = ``;
 		div.innerHTML = `<div id="game" class="container" align="center" style="text-align: left; min-width:500;">
@@ -351,6 +363,13 @@
 						</div>
 					</div>
 					<div class="row" style="font-size:20;">
+						<span>${privacy} lobby</span>
+					</div>
+					<div class="row" style="font-size:20;">
+						<span>Room: &nbsp;</span>
+						<span id="roomNumber">${data.game.room}</span>
+					</div>
+					<div class="row" style="font-size:20;">
 						<span>Admin: &nbsp;</span>
 						<span id="admin">${data.game.admin}</span>
 					</div>
@@ -361,10 +380,6 @@
 					<div class="row" style="font-size:20;">
 						<span>Currently picking: &nbsp;</span>
 						<span id="picking"></span>
-					</div>
-					<div class="row" style="font-size:20;">
-						<span>Room: &nbsp;</span>
-						<span id="roomNumber">${data.game.room}</span>
 					</div>
 					<div class="row">
 						<div class="col"></div>

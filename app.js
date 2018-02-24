@@ -317,9 +317,8 @@ const creategame = (socket,data) => {
 		team2stocks: 10,
 		phase: false,
 		picking: username,
-		room: data.room,	
-		private: (data.private) ? true : false
-		// Do something with the password
+		priv: (data.private) ? true : false,
+		room: data.room
 	};
 	games.push(game);
 	socket.emit('joingame', {
