@@ -349,7 +349,7 @@
 								</div>
 							</div>
 							<div class="row" style="font-size:20;">
-								<span>${privacy} lobby<span class="badge badge-info">   players</span></span>
+								<span>${privacy} lobby<span class="badge badge-info" id="numUsers"> 1 player</span></span>
 								
 							</div>
 							<div class="row" style="font-size:20;">
@@ -453,10 +453,12 @@
 		}
 	})
 
-	socket.on("gameupdate", data => {
+	socket.on("gameupdate", data => {	
 		if (document.getElementById("game")) {
 			document.getElementById("admin").innerHTML = data.admin;
 			document.getElementById("picking").innerHTML = data.picking;
+			let numUsers = data.game.inbound.length + data.game.team1.length + data.game.team2.length;
+			document.getElementById('numUsers').innerHTML = numUsers + " players";
 
 			setInterval(() => {
 				$("#picking").animate({
