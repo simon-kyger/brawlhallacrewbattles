@@ -202,7 +202,7 @@
 		document.getElementById("success").innerHTML = data.msg;
 	});
 	socket.on("loginsuccess", data => gamespage(data));
-	socket.on("verif", data => err(data));
+	socket.on("verif", data => errnotif(data));
 	const welcomeheader = data => {
 		document.getElementById("loginheadert").innerHTML = data.msg;
 	}
@@ -211,7 +211,7 @@
 		document.getElementById("loginheadert").innerHTML = data.msg;
 	}
 	
-	const err = data => {
+	const errnotif = data => {
 		if(document.getElementById('error')){
 			document.getElementById('error').innerHTML = data.msg;
 		}
@@ -358,7 +358,8 @@
 								</div>
 							</div>
 							<div class="row" style="font-size:20;">
-								<span>${privacy} lobby</span>
+								<span>${privacy} lobby<span class="badge badge-info">   players</span></span>
+								
 							</div>
 							<div class="row" style="font-size:20;">
 								<span>Room: &nbsp;</span>
