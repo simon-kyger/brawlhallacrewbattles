@@ -318,7 +318,7 @@
 		}
 	});
 
- socket.on("gamesupdate", data => {
+	socket.on("gamesupdate", data => {
         if (document.getElementById("games")) {
             document.getElementById("games").innerHTML = "";
             for (let i = 0; i < data.length; i++) {
@@ -326,7 +326,7 @@
                 let div = `<div class="ga" id='usergame${i}' style="white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
                 document.getElementById("games").innerHTML += div;
                 document.getElementById(`usergame${i}`).addEventListener('click', e=>{
-                   console.log("clicked on" + document.getElementById(`usergame${i}`));
+                   console.log("clicked on" + e.target.id);
                 })
             }
         }

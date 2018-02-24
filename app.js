@@ -306,7 +306,7 @@ const creategame = (socket,data) => {
 	if(checkRoomNumExists(data.room)){
 		socket.emit('verif', { msg: "A crew battle already uses this room number." });
 		return;
-	} else {
+	}
 	const game = {
 		admin: username,
 		captains: [],
@@ -330,7 +330,6 @@ const creategame = (socket,data) => {
 	setTimeout(()=>{
 		socket.emit('gameupdate', game)
 	}, 0);
-  }
 }
 
 //void
