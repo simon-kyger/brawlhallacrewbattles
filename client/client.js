@@ -297,7 +297,9 @@
 			let pass = document.getElementById("privPassword").value;
 			let reg = /\b\d{5}\b/
 			if(reg.test(pass)){
-				socket.emit('privgame', pass);
+				socket.emit('joingame', {
+					priv: pass
+				});
 			} else {
 				document.getElementById("passerror").innerHTML = "Enter a valid room number.";
 				document.getElementById("passerror").classList.add("text-danger");
@@ -360,15 +362,17 @@
 			for (let i = 0; i < data.length; i++) {
 				let game = data[i];
 				if(!game.priv){ // Only show if game is public
-				let div = `<div class="ga" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
-				document.getElementById("games").innerHTML += div;
+					let div = `<div class="ga" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
+					document.getElementById("games").innerHTML += div;
 				}
 			}
 			document.querySelectorAll('.ga').forEach((domelem) => {
 				domelem.addEventListener('click', (e) => {
 					let selectedgame = e.target.textContent;
 					selectedgame = selectedgame.substring(0, selectedgame.length - 7);
-					socket.emit("joingame", selectedgame);
+					socket.emit("joingame", {
+						selected: selectedgame
+					});
 				})
 			})
 		}

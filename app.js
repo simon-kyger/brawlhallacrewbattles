@@ -76,33 +76,49 @@ const checkifadmin = socket => {
 	return false;
 }
 
-//void
-const joingame = (socket, data) => {
-	let username = getusername(socket);
-	if (!username) return;
-	for (let i = 0; i < games.length; i++) {
+//returns game
+const findgamebyid = args => {
+	for (let i=0; i<games.length; i++){
 		let game = games[i];
-		if (game.admin == data) {
-			game.inbound.push(username);
-			socket.emit('joingame', {
-				username: username,
-				game: game,
-			});
-			for (let j = 0; j < game.inbound.length; j++) {
-				sessions[game.inbound[j]].emit('gameupdate', game);
-			}
-			for (let j = 0; j < game.team1.length; j++) {
-				sessions[game.team1[j]].emit('gameupdate', game);
-			}
-			for (let j = 0; j < game.team2.length; j++) {
-				sessions[game.team2[j]].emit('gameupdate', game);
-			}
+		if (game.room == args){
+			return game;
 		}
 	}
 }
 
+//void
+const joingame = (socket, data) => {
+	let username = getusername(socket);
+	if (!username) return;
+	let game;
+	if (data.priv){
+		game = findgamebyid(data.priv);
+		if (!game){
+			socket.emit('passfailed', { msg: "No room found by that #." });
+			return;
+		}
+	} else {
+		game = findgamebysocket(sessions[data.selected]);
+	}
+	if (!game) return;
+	game.inbound.push(username);
+	socket.emit('joingame', {
+		username: username,
+		game: game,
+	});
+	for (let j = 0; j < game.inbound.length; j++) {
+		sessions[game.inbound[j]].emit('gameupdate', game);
+	}
+	for (let j = 0; j < game.team1.length; j++) {
+		sessions[game.team1[j]].emit('gameupdate', game);
+	}
+	for (let j = 0; j < game.team2.length; j++) {
+		sessions[game.team2[j]].emit('gameupdate', game);
+	}
+}
+
 //returns obj
-const findgame = socket => {
+const findgamebysocket = socket => {
 	for (let i = 0; i < games.length; i++) {
 		let game = games[i];
 		for (let j = 0; j < game.team1.length; j++) {
@@ -122,7 +138,7 @@ const findgame = socket => {
 
 //void
 const leavegame = socket => {
-	let game = findgame(socket);
+	let game = findgamebysocket(socket);
 	let username = getusername(socket);
 	if (!game || !username) return;
 	if (game.admin == username) {
@@ -176,7 +192,7 @@ const leavegame = socket => {
 
 //void
 const resetgame = socket => {
-	let game = findgame(socket);
+	let game = findgamebysocket(socket);
 	let username = getusername(socket);
 	if (!game || !username) return;
 	if (game.admin !== username)
@@ -210,99 +226,6 @@ const resetgame = socket => {
 	}
 	for (let i = 0; i < ngame.inbound.length; i++) {
 		sessions[ngame.inbound[i]].emit('gameupdate', ngame);
-	}
-}
-
-//void
-const updategame = (socket, data) => {
-	let game = findgame(socket);
-	let username = getusername(socket);
-	if (!game || !username) return;
-	//if captains pick
-	if (game.phase) {
-		if ((game.picking !== username) || (data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
-			return;
-		if (data.movement == 'left') {
-			if ((data.container == 'team1') || (game.picking == game.captains[1]))
-				return;
-			if ((data.container == 'team2') && (game.picking == game.captains[0]))
-				return;
-			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
-				game.team2.splice(game.team2.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team1.push(data.selected);
-			}
-		}
-		if (data.movement == 'right') {
-			if ((data.container == 'team2') || (game.picking == game.captains[0]))
-				return;
-			if ((data.container == 'team1') && (game.picking == game.captains[1]))
-				return;
-			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
-				game.team1.splice(game.team1.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team2.push(data.selected);
-			}
-		}
-
-		if (game.captains.indexOf(username)) {
-			game.picking = game.captains[0];
-		}
-		else {
-			game.picking = game.captains[1];
-		}
-	}
-	else if ((game.admin == username) && !game.phase) {
-		//admin control only
-		if (data.movement == 'left') {
-			if ((data.container == 'team1') || game.team1.length)
-				return;
-			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
-				game.team2.splice(game.team2.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team1.push(data.selected);
-			}
-		}
-		if (data.movement == 'right') {
-			if ((data.container == 'team2') || game.team2.length)
-				return;
-			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
-				game.team1.splice(game.team1.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team2.push(data.selected);
-			}
-		}
-	}
-	else {
-		//for anyone trying to move anything that isn't an admin or a captain
-		return;
-	}
-	if (game.team1.length && game.team2.length && !game.phase) {
-		game.captains[0] = game.team1[0];
-		game.captains[1] = game.team2[0];
-		game.phase = true;
-		game.picking = game.captains[0];
-	}
-	for (let i = 0; i < game.team1.length; i++) {
-		sessions[game.team1[i]].emit('gameupdate', game);
-	}
-	for (let i = 0; i < game.team2.length; i++) {
-		sessions[game.team2[i]].emit('gameupdate', game);
-	}
-	for (let i = 0; i < game.inbound.length; i++) {
-		sessions[game.inbound[i]].emit('gameupdate', game);
 	}
 }
 
@@ -343,7 +266,7 @@ const creategame = (socket, data) => {
 
 //void
 const disconnect = socket => {
-	let game = findgame(socket);
+	let game = findgamebysocket(socket);
 	if (game)
 		leavegame(socket)
 
@@ -468,7 +391,7 @@ const stockchange = (socket, data) => {
 	if (!checkifadmin(socket))
 		return;
 	let user = getusername(socket);
-	let game = findgame(socket);
+	let game = findgamebysocket(socket);
 	if (data.team1stocks !== undefined) game.team1stocks = data.team1stocks;
 	if (data.team2stocks !== undefined) game.team2stocks = data.team2stocks;
 	for (let i = 0; i < game.inbound.length; i++) {
@@ -491,26 +414,95 @@ const stockchange = (socket, data) => {
 	}
 }
 
-const privgame = (socket, data) => {
+//void
+const updategame = (socket, data) => {
+	let game = findgamebysocket(socket);
 	let username = getusername(socket);
-	if (!username) return;
-	let ga = games.filter(g => g.room == data); // Check in games array for a matching room number
-	if (ga === undefined || ga.length == 0) {
-		socket.emit('passfailed', { msg: "No lobby found." });
-	}
-	else {
-
-		for (let i = 0; i < games.length; i++) {
-			let game = games[i];
-			if (game.room == data) {
-				game.inbound.push(username);
-				socket.emit("joingame", {
-					username: username,
-					game: game
-				});
+	if (!game || !username) return;
+	//if captains pick
+	if (game.phase) {
+		if ((game.picking !== username) || (data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
+			return;
+		if (data.movement == 'left') {
+			if ((data.container == 'team1') || (game.picking == game.captains[1]))
+				return;
+			if ((data.container == 'team2') && (game.picking == game.captains[0]))
+				return;
+			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
+				game.team2.splice(game.team2.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
 			}
-
+			else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team1.push(data.selected);
+			}
+		}
+		if (data.movement == 'right') {
+			if ((data.container == 'team2') || (game.picking == game.captains[0]))
+				return;
+			if ((data.container == 'team1') && (game.picking == game.captains[1]))
+				return;
+			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
+				game.team1.splice(game.team1.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			}
+			else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team2.push(data.selected);
+			}
 		}
 
+		if (game.captains.indexOf(username)) {
+			game.picking = game.captains[0];
+		}
+		else {
+			game.picking = game.captains[1];
+		}
+	}
+	else if ((game.admin == username) && !game.phase) {
+		//admin control only
+		if (data.movement == 'left') {
+			if ((data.container == 'team1') || game.team1.length)
+				return;
+			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
+				game.team2.splice(game.team2.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			}
+			else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team1.push(data.selected);
+			}
+		}
+		if (data.movement == 'right') {
+			if ((data.container == 'team2') || game.team2.length)
+				return;
+			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
+				game.team1.splice(game.team1.indexOf(data.selected), 1);
+				game.inbound.push(data.selected);
+			}
+			else {
+				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
+				game.team2.push(data.selected);
+			}
+		}
+	}
+	else {
+		//for anyone trying to move anything that isn't an admin or a captain
+		return;
+	}
+	if (game.team1.length && game.team2.length && !game.phase) {
+		game.captains[0] = game.team1[0];
+		game.captains[1] = game.team2[0];
+		game.phase = true;
+		game.picking = game.captains[0];
+	}
+	for (let i = 0; i < game.team1.length; i++) {
+		sessions[game.team1[i]].emit('gameupdate', game);
+	}
+	for (let i = 0; i < game.team2.length; i++) {
+		sessions[game.team2[i]].emit('gameupdate', game);
+	}
+	for (let i = 0; i < game.inbound.length; i++) {
+		sessions[game.inbound[i]].emit('gameupdate', game);
 	}
 }
