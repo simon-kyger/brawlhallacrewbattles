@@ -246,9 +246,9 @@
 	const gamespage = data => {
 		let div = document.getElementById("main");
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
-							<div id="loggedin" style="font-size: 20; position:absolute;">Welcome back ${data.username}</div>
 							${headert()}
 							<main class="container" style="flex:1;">
+								<div id="loggedin" style="font-size: 20; position:absolute;">Welcome back ${data.username}</div>
 								${creategamemodal()}
 								${passwordModal()}
 								<div class="row">
@@ -272,7 +272,7 @@
 										</ul>
 									</div>
 									<div class="col-md-8">
-										<div id="games" style="font-size:20; background-color: black; min-height:400px; width:100%;border-color: white;"></div>
+										<div id="games" style="font-size:20; background-color: black; min-height:400px; width:100%;border: 1px solid white;"></div>
 									</div>
 								</div>
 							</main>
@@ -300,10 +300,10 @@
 				let privacy = ((document.getElementById('priv').value === "Private") ? true : false);
 
 				if (privacy) {
-						socket.emit('creategame', {
-							room: document.getElementById('room').value,
-							private: true
-						});
+					socket.emit('creategame', {
+						room: document.getElementById('room').value,
+						private: true
+					});
 				}
 				else {
 					socket.emit('creategame', {
@@ -362,9 +362,9 @@
 
 	const renderaddremovestock = (team) => {
 		return `<div id="addremovestock" class="col">
-			<button id="addstock${team}" style="color: white; background-color: black; width:40;">+</button>
-			<button id="removestock${team}" style="color: white; background-color: black; width:40;">-</button>
-		</div>
+					<button id="addstock${team}" style="color: white; background-color: black; width:40;">+</button>
+					<button id="removestock${team}" style="color: white; background-color: black; width:40;">-</button>
+				</div>
 		`;
 	}
 

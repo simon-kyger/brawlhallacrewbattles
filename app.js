@@ -52,7 +52,8 @@ const getusername = socket => {
 	return Object.keys(sessions).find(key => sessions[key] === socket);
 }
 
-const checkRoomNumExists = roomnumber => {
+//returns boolean
+const checkroomnumexists = roomnumber => {
 	for (let i = 0; i < games.length; i++) {
 		let game = games[i];
 		if (game.room == roomnumber) {
@@ -234,7 +235,7 @@ const creategame = (socket, data) => {
 		return;
 	const username = getusername(socket);
 	if (!username) return;
-	if (checkRoomNumExists(data.room)) {
+	if (checkroomnumexists(data.room)) {
 		socket.emit('verif', { msg: "A crew battle already uses this room number." });
 		return;
 	}
@@ -386,6 +387,7 @@ const register = (socket, db, data) => {
 	});
 }
 
+//void
 const stockchange = (socket, data) => {
 	if (!checkifadmin(socket))
 		return;
