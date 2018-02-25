@@ -118,11 +118,6 @@
 											</div>
 										</div>
 										<div class="col">
-											<input type="password" class="form-control" name="pwd" placeholder="Password" id="pwd" disabled>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
 											<select id="priv" class="selectpicker form-control" data-live-search="true" title="Privacy">
 												<option>Public</option>
 												<option>Private</option>
@@ -284,15 +279,6 @@
 							${footert()}
 						</wrapper>
 		`;
-		document.getElementById('priv').addEventListener("change", c => {
-			if (document.getElementById('priv').value == "Public") {
-				document.getElementById('pwd').disabled = true;
-				document.getElementById('pwd').value = '';
-			}
-			else {
-				document.getElementById('pwd').disabled = false;
-			}
-		});
 		document.getElementById("privateJoin").addEventListener("click", e => {
 			let pass = document.getElementById("privPassword").value;
 			let reg = /\b\d{5}\b/
@@ -312,20 +298,12 @@
 			if (reg.test(room.value)) {
 				document.getElementById('error').innerHTML = "";
 				let privacy = ((document.getElementById('priv').value === "Private") ? true : false);
-				let pwd = document.getElementById('pwd').value;
 
 				if (privacy) {
-					let regPwd = /^[a-z0-9]+$/i; // Verify that password contains Alphanumeric characters
-					if (regPwd.test(pwd)) {
 						socket.emit('creategame', {
 							room: document.getElementById('room').value,
-							private: true,
-							password: pwd
+							private: true
 						});
-					}
-					else {
-						document.getElementById('error').innerHTML = "Use only letters and numbers in your password.";
-					}
 				}
 				else {
 					socket.emit('creategame', {

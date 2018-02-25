@@ -39,7 +39,6 @@ mongo.connect(dburl, (err, database) => {
 		socket.on('resetgame', () => resetgame(socket));
 		socket.on('leavegame', () => leavegame(socket));
 		socket.on('stockchange', (data) => stockchange(socket, data));
-		socket.on('privgame', (data) => privgame(socket, data));
 	});
 });
 
