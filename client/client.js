@@ -503,24 +503,42 @@
 		`;
 		if (document.getElementById("addremovestock")) {
 			document.getElementById("addstockt1").addEventListener("click", e => {
+				if(document.getElementById("t1stocks").classList.contains('text-danger')){
+					document.getElementById("t1stocks").classList.remove('text-danger');
+				}
 				socket.emit("stockchange", {
 					team1stocks: parseInt(document.getElementById("t1stocks").innerHTML) + 1
 				});
 			});
 			document.getElementById("addstockt2").addEventListener("click", e => {
+				if(document.getElementById("t2stocks").classList.contains('text-danger')){
+					document.getElementById("t2stocks").classList.remove('text-danger');
+				}
 				socket.emit("stockchange", {
 					team2stocks: parseInt(document.getElementById("t2stocks").innerHTML) + 1
 				});
 			});
 			document.getElementById("removestockt1").addEventListener("click", e => {
+				if(parseInt(document.getElementById("t1stocks").innerHTML) <= 1){
+					if(!document.getElementById("t1stocks").classList.contains('text-danger')){
+						document.getElementById("t1stocks").classList.add('text-danger');
+					}
+				} else {
 				socket.emit("stockchange", {
 					team1stocks: parseInt(document.getElementById("t1stocks").innerHTML) - 1
 				});
+				}
 			});
 			document.getElementById("removestockt2").addEventListener("click", e => {
+				if(parseInt(document.getElementById("t2stocks").innerHTML) <= 1){
+						if(!document.getElementById("t2stocks").classList.contains('text-danger')){
+						document.getElementById("t2stocks").classList.add('text-danger');
+					}
+				} else {
 				socket.emit("stockchange", {
 					team2stocks: parseInt(document.getElementById("t2stocks").innerHTML) - 1
 				});
+				}
 			});
 		}
 		if (document.getElementById("reset")) {
@@ -544,7 +562,8 @@
 		if (document.getElementById("game")) {
 			document.getElementById("admin").innerHTML = data.admin;
 			document.getElementById("picking").innerHTML = data.picking;
-			document.getElementById('numUsers').innerHTML = `${data.inbound.length + data.team1.length + data.team2.length} players`;
+			let numPlayers = data.inbound.length + data.team1.length + data.team2.length;
+			document.getElementById('numUsers').innerHTML = (numPlayers > 1) ? numPlayers+ " players" : numPlayers + " player";
 
 			setInterval(() => {
 				$("#picking").animate({
