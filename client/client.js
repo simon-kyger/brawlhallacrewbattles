@@ -3,18 +3,20 @@
 	const socket = io();
 
 	//static templates
-	const headert = () => {
+	const headert = (login) => {
 		return `<div class="container" id="header">
 					<div class="row">
 						<div class="col-12">
 							<a href="https://www.brawlhalla.com" target="_blank">
-								<img src="img/blogotop.png" class="mx-auto d-block" style="padding-top: 50; width:100%; max-width: 500px;">
+								<img src="img/blogotop.png" class="mx-auto d-block" style="padding-top: ${login ? 50 : 0}; width:100%; max-width: 500px;">
 							</a>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-12" style="text-align: center; color: orange;">
-							CREWS
+							<a href="https://www.brawlhalla.com" target="_blank">
+								<img src="img/crew_battles.png" class="mx-auto d-block" style="width:15%; margin-top: -40; margin-bottom: 40;">
+							</a>
 						</div>
 					</div>
 				</div>
@@ -59,38 +61,36 @@
 	}
 
 	const passwordModal = () => {
-		return `
-		<div class="modal modal-sm fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="pwdModalLabel" aria-hidden="true" style="color: #333;margin:0 auto;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" text-center style="margin: 0 auto;">Join private lobby</h5>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="password">Room #</label>
-              </div>
-              <input type="text" class="form-control" aria-label="Room#" placeholder="#00000" id="privPassword" maxlength="5">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <p style="font-size: 1vw;" id="passerror">Insert the private room number</p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="privateJoin">Join</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+		return `<div class="modal modal-sm fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="pwdModalLabel" aria-hidden="true" style="color: #333;margin:0 auto;">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" text-center style="margin: 0 auto;">Join private lobby</h5>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<label class="input-group-text" for="password">Room #</label>
+											</div>
+											<input type="text" class="form-control" aria-label="Room#" placeholder="#00000" id="privPassword" maxlength="5">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<p style="font-size: 1vw;" id="passerror">Insert the private room number</p>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-primary" id="privateJoin">Join</button>
+							</div>
+						</div>
+					</div>
+				</div>
 		`;
 	}
 
@@ -158,7 +158,7 @@
 		div.style.height = `100%`;
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${loginvid()}
-							${headert()}
+							${headert(true)}
 							<main class='container' style='flex:1;'>
 								<div class='row'>
 									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
@@ -248,11 +248,15 @@
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${headert()}
 							<main class="container" style="flex:1;">
-								<div id="loggedin" style="font-size: 20; position:absolute;">Welcome back ${data.username}</div>
 								${creategamemodal()}
 								${passwordModal()}
 								<div class="row">
-									<div class="col md-4 offset-md-4">
+									<div class="col md-4">
+										<div id="loggedin" style="font-size: 20;">Welcome back ${data.username}</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col md-4">
 										<div id="intermediate" style="font-size: 20;"></div>
 									</div>
 								</div>
