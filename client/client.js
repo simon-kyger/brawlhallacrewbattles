@@ -56,7 +56,7 @@
 			`-SX2mbt4-f4?start=7`, //ldz crockie
 		];
 		const randvid = vidids[Math.floor(Math.random() * (vidids.length))];
-		return `<iframe id="brawlvid" style="position: absolute; top: 0; left: 0; width:100%; height:100%; z-index:-1; opacity:.7;" src="https://www.youtube.com/embed/${randvid}&controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
+		return `<iframe id="brawlvid" style="opacity:.7;" src="//www.youtube.com/embed/${randvid}&controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" frameborder="0" allowfullscreen></iframe>
 		`;
 	}
 
@@ -93,7 +93,39 @@
 				</div>
 		`;
 	}
-
+	/*const editModal = (data) => { // Edit modal
+		return `<div class="modal modal-sm fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" style="color: #333;margin:0 auto;">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" text-center style="margin: 0 auto;">Edit lobby</h5>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<label class="input-group-text" for="password">Room #</label>
+											</div>
+											<input type="text" class="form-control" aria-label="Room#" placeholder="${data}" id="privPassword" maxlength="5">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<p style="font-size: 1vw;" id="passerror">Edit room number: </p>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-primary" id="editLobby">Edit</button>
+							</div>
+						</div>
+					</div>
+				</div>
+		`;
+	}*/ 
 	const creategamemodal = () => {
 		return `<div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="color: black;">
 					<div class="modal-dialog" role="document">
@@ -164,11 +196,11 @@
 									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
 										<form>
 											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
-											<input id="username" style="color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
+											<input id="username" style="padding-left: 5px;color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
 											<div style="padding-top:10; text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Password: </div>
 											<input id="password" type="password" style="color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
 											<div class="row" style="padding-top: 10px;">
-												<div class="col">
+												<div class="col">	
 													<a id="loginlink" class="btn btn-lg" href="#">Login</a>
 												</div>
 												<div class="col">
@@ -321,14 +353,16 @@
 				document.getElementById('error').innerHTML = "Please, specify a valid room number.";
 			}
 		});
-
-		//joinprivate game goes here
 	}
-
 	socket.on("joingame", data => {
 		playgamepage(data);
 		$('#controlModal').modal('hide');
+		$('#pwdModal').modal('hide');
+		//$('#editModal').modal('hide');
 		$('body').removeClass('modal-open');
+		//$("#editModal").remove();
+		$("#controlModal").remove();
+		$("#pwdModal").remove();
 		$('.modal-backdrop').remove();
 	});
 
@@ -361,19 +395,31 @@
 	});
 
 	const renderreset = () => {
-		return `<button id="reset" style="color: white; background-color: black;">ResetGame</button>`;
+		return `<button id="reset" class="btn btn-dark">Reset Game</button>`;
 	}
 
 	const renderaddremovestock = (team) => {
 		return `<div id="addremovestock" class="col">
-					<button id="addstock${team}" style="color: white; background-color: black; width:40;">+</button>
-					<button id="removestock${team}" style="color: white; background-color: black; width:40;">-</button>
+					<button id="addstock${team}" class="btn btn-dark" style="width:40px;height: 40px;"><i class="fa fa-plus"></i></button>
+					<button id="removestock${team}" class="btn btn-dark" style="width:40px;height: 40px;"><i class="fa fa-minus"></i></button>
 				</div>
 		`;
-	}
+	}		
 
 	const playgamepage = data => {
 		let div = document.getElementById("main");
+		$('.modal-backdrop').remove();
+		/*let isAdm = () => { // edit button for later use
+			if(data.username == data.game.admin){
+				return `
+				<div class="row">
+						<button id="editgame" class="btn btn-dark" style="width: 28%;" data-toggle="modal" data-target="#editModal">Edit Game</button>
+					</div>
+				`;
+			} else {
+				return "";
+			}
+		}*/
 		div.innerHTML = "";
 		div.style.width = `100%`;
 		let privacy = (data.game.priv) ? "Private" : "Public";
@@ -382,16 +428,16 @@
 		div.innerHTML = `<div id="game" class="container" align="center" style="text-align: left; min-width:500;">
 							<div id="loggedin" style="font-size: 20; position: absolute;">Welcome back ${data.username}</div>
 							${headert()}
-							<div class="row" style="float: right; font-size: 20">
+					<div class="row" style="float: right; font-size: 20">
 								<div class="col">
 									${data.resettable ? renderreset() : ""}
 								</div>
 								<div class="col">
-									<button id="leavegame" style="color: white; background-color: black; float:right;">LeaveGame</button>
+									<button id="leavegame" class="btn btn-dark flot-right">LeaveGame</button>
 								</div>
 							</div>
 							<div class="row" style="font-size:20;">
-								<span>${privacy} lobby<span class="badge badge-info" id="numUsers"> 1 player</span></span>
+								<span>${privacy} lobby  <span class="badge badge-info" id="numUsers"> 1 player</span></span>
 								
 							</div>
 							<div class="row" style="font-size:20;">
