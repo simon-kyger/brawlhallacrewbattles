@@ -457,8 +457,7 @@
 		if (document.getElementById("game")) {
 			document.getElementById("admin").innerHTML = data.admin;
 			document.getElementById("picking").innerHTML = data.picking;
-			let numUsers = data.game.inbound.length + data.game.team1.length + data.game.team2.length;
-			document.getElementById('numUsers').innerHTML = numUsers + " players";
+			document.getElementById('numUsers').innerHTML = `${data.inbound.length + data.team1.length + data.team2.length} players`;
 
 			setInterval(() => {
 				$("#picking").animate({
