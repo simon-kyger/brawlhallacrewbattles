@@ -28,17 +28,17 @@
 					<div class='row'>
 						<div class='col-sm-8 col-md-4' style='white-space:nowrap;'>
 							Powered with:
-							<a href="https://nodejs.org/en/" target="_blank"><img src="img/node.png" style="margin-left:4;"></a>
-							<a href="https://socket.io/" target="_blank"><img src="img/socketio.png"></a>
-							<a href="https://www.heroku.com/" target="_blank"><img src="img/heroku.png"></a>
-							<a href="https://www.mongodb.com/" target="_blank"><img src="img/mongo.png" style="position: relative; bottom:4;"></a>
+							<a href="https://nodejs.org/en/" target="_blank"><img src="img/sprite.png" style="margin-left:4;" class="node"></a>
+							<a href="https://socket.io/" target="_blank"><img src="img/sprite.png" class="socketio"></a>
+							<a href="https://www.heroku.com/" target="_blank"><img src="img/sprite.png" class="heroku"></a>
+							<a href="https://www.mongodb.com/" target="_blank"><img src="img/sprite.png" style="position: relative; bottom:4;"  class="mongo"></a>
 						</div>
 						<div class='col-sm-6 col-md-4 text-md-center'>
-							<img src='img/discord.png'>
+							<img src='img/sprite.png' class="discord">
 							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
 						</div>
 						<div class='col-md-4 text-md-right'>
-							<a href='https://www.github.com' target='_blank'><img src='img/github.png'></a>
+							<a href='https://www.github.com' target='_blank'><img src='img/sprite.png' class="github"></a>
 							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
 						</div>
 					</div>
