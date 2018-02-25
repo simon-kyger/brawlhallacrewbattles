@@ -58,6 +58,42 @@
 		`;
 	}
 
+	const passwordModal = () => {
+		return `
+		<div class="modal modal-sm fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="pwdModalLabel" aria-hidden="true" style="color: #333;margin:0 auto;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" text-center style="margin: 0 auto;">Join private lobby</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="password">Room #</label>
+              </div>
+              <input type="text" class="form-control" aria-label="Room#" placeholder="#00000" id="privPassword" maxlength="5">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p style="font-size: 1vw;" id="passerror">Insert the private room number</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="privateJoin">Join</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+		`;
+	}
+
 	const creategamemodal = () => {
 		return `<div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="color: black;">
 					<div class="modal-dialog" role="document">
@@ -200,13 +236,18 @@
 		document.getElementById("success").innerHTML = data.msg;
 	});
 	socket.on("verif", data => {
-		if(document.getElementById('error')){
+		if (document.getElementById('error')) {
 			document.getElementById('error').innerHTML = data.msg;
 		}
 	});
+	socket.on('passfailed', data => {
+		if(document.getElementById("passerror")){
+			document.getElementById("passerror").innerHTML = data.msg;
+		}	
+	});
 	socket.on("loginpage", () => loginpage());
 	socket.on("loginsuccess", data => gamespage(data));
-	
+
 	const gamespage = data => {
 		let div = document.getElementById("main");
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
@@ -214,6 +255,7 @@
 							${headert()}
 							<main class="container" style="flex:1;">
 								${creategamemodal()}
+								${passwordModal()}
 								<div class="row">
 									<div class="col md-4 offset-md-4">
 										<div id="intermediate" style="font-size: 20;"></div>
@@ -226,11 +268,11 @@
 								<div class="row">
 									<div class="col-md-4 col-xs-12">
 										<ul id="createjoin" class="list-group">
-											<li id="creategame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
+											<li id="creategame" class="list-group-item" style="font-size: 30px;color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
 												Create
 											</li>
-											<li id="joingame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;">
-												Join
+											<li id="joingame" class="list-group-item" style="font-size: 30px;color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#pwdModal">
+												Join Private lobby
 											</li>
 										</ul>
 									</div>
@@ -242,16 +284,25 @@
 							${footert()}
 						</wrapper>
 		`;
-
 		document.getElementById('priv').addEventListener("change", c => {
 			if (document.getElementById('priv').value == "Public") {
 				document.getElementById('pwd').disabled = true;
 				document.getElementById('pwd').value = '';
-			} else {
+			}
+			else {
 				document.getElementById('pwd').disabled = false;
 			}
 		});
-
+		document.getElementById("privateJoin").addEventListener("click", e => {
+			let pass = document.getElementById("privPassword").value;
+			let reg = /\b\d{5}\b/
+			if(reg.test(pass)){
+				socket.emit('privgame', pass);
+			} else {
+				document.getElementById("passerror").innerHTML = "Enter a valid room number.";
+				document.getElementById("passerror").classList.add("text-danger");
+			}
+		});
 		document.getElementById('creating').addEventListener("click", e => {
 			let room = document.getElementById('room');
 			let reg = /\b\d{5}\b/; // Verify that the room number is 5 digits, \d = [0-9]
@@ -263,23 +314,26 @@
 
 				if (privacy) {
 					let regPwd = /^[a-z0-9]+$/i; // Verify that password contains Alphanumeric characters
-					if(regPwd.test(pwd)){
+					if (regPwd.test(pwd)) {
 						socket.emit('creategame', {
 							room: document.getElementById('room').value,
 							private: true,
 							password: pwd
 						});
-					} else {
+					}
+					else {
 						document.getElementById('error').innerHTML = "Use only letters and numbers in your password.";
 					}
-				} else {
+				}
+				else {
 					socket.emit('creategame', {
 						room: document.getElementById('room').value,
 						private: false
 					});
 				}
 
-			} else {
+			}
+			else {
 				document.getElementById('error').innerHTML = "Please, specify a valid room number.";
 			}
 		});
@@ -301,22 +355,24 @@
 	});
 
 	socket.on("gamesupdate", data => {
-        if (document.getElementById("games")) {
-            document.getElementById("games").innerHTML = "";
-            for (let i = 0; i < data.length; i++) {
-                let game = data[i];
-                let div = `<div class="ga" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
-                document.getElementById("games").innerHTML += div;
-            }
-            document.querySelectorAll('.ga').forEach((domelem)=>{
-            	domelem.addEventListener('click', (e)=>{
-            		let selectedgame = e.target.textContent;
+		if (document.getElementById("games")) {
+			document.getElementById("games").innerHTML = "";
+			for (let i = 0; i < data.length; i++) {
+				let game = data[i];
+				if(!game.priv){ // Only show if game is public
+				let div = `<div class="ga" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
+				document.getElementById("games").innerHTML += div;
+				}
+			}
+			document.querySelectorAll('.ga').forEach((domelem) => {
+				domelem.addEventListener('click', (e) => {
+					let selectedgame = e.target.textContent;
 					selectedgame = selectedgame.substring(0, selectedgame.length - 7);
 					socket.emit("joingame", selectedgame);
-            	})
-            })
-        }
-    });
+				})
+			})
+		}
+	});
 
 	const renderreset = () => {
 		return `<button id="reset" style="color: white; background-color: black;">ResetGame</button>`;
@@ -453,7 +509,7 @@
 		}
 	})
 
-	socket.on("gameupdate", data => {	
+	socket.on("gameupdate", data => {
 		if (document.getElementById("game")) {
 			document.getElementById("admin").innerHTML = data.admin;
 			document.getElementById("picking").innerHTML = data.picking;
