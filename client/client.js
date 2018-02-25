@@ -433,7 +433,7 @@
 									${data.resettable ? renderreset() : ""}
 								</div>
 								<div class="col">
-									<button id="leavegame" class="btn btn-dark flot-right">LeaveGame</button>
+									<button id="leavegame" class="btn btn-dark">LeaveGame</button>
 								</div>
 							</div>
 							<div class="row" style="font-size:20;">
