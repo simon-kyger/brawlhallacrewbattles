@@ -43,15 +43,6 @@ mongo.connect(dburl, (err, database) => {
 	});
 });
 
-//void
-const init = socket => {
-	socket.emit('loginpage');
-}
-
-const reconnect = socket => {
-	socket.emit('reconnect');
-}
-
 //returns string
 const getusername = socket => {
 	return Object.keys(sessions).find(key => sessions[key] === socket);
@@ -67,7 +58,7 @@ const checkifadmin = socket => {
 	return Boolean(games.find(game=> game.admin === getusername(socket)))
 }
 
-//returns game
+//returns obj
 const findgamebyid = args => {
 	return games.find(game=> game.room === args)
 }
@@ -92,6 +83,16 @@ const gamefactory = (username, roomnum, privacy) => {
 		room: roomnum,
 		priv: (privacy) ? true : false
 	};
+}
+
+//void
+const init = socket => {
+	socket.emit('loginpage');
+}
+
+//void
+const reconnect = socket => {
+	socket.emit('reconnect');
 }
 
 //void
@@ -195,7 +196,7 @@ const creategame = (socket, data) => {
 		socket.emit('verif', { msg: "A crew battle already uses this room number." });
 		return;
 	}
-	const game = gamefactory(username, data.room, data.priv);
+	const game = gamefactory(username, data.room, data.private);
 	games.push(game);
 	socket.emit('joingame', {
 		username: username,
