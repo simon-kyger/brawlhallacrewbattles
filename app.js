@@ -44,29 +44,19 @@ mongo.connect(dburl, (err, database) => {
 });
 
 //returns string
-const getusername = socket => {
-	return Object.keys(sessions).find(key => sessions[key] === socket);
-}
+const getusername = socket => Object.keys(sessions).find(key => sessions[key] === socket)
 
 //returns boolean
-var checkroomnumexists = roomnumber => {
-	return Boolean(games.find(game=> game.room === roomnumber))
-}
+var checkroomnumexists = roomnumber => Boolean(games.find(game=> game.room === roomnumber))
 
 //returns boolean
-const checkifadmin = socket => {
-	return Boolean(games.find(game=> game.admin === getusername(socket)))
-}
+const checkifadmin = socket => Boolean(games.find(game=> game.admin === getusername(socket)))
 
 //returns obj
-const findgamebyid = args => {
-	return games.find(game=> game.room === args)
-}
+const findgamebyid = args => games.find(game=> game.room === args)
 
 //returns obj
-const findgamebysocket = socket => {
-	return games.find(game => game.inbound.concat(game.team1, game.team2).some(user => user === getusername(socket)));
-}
+const findgamebysocket = socket => games.find(game => game.inbound.concat(game.team1, game.team2).some(user => user === getusername(socket)));
 
 //generates a game object
 const gamefactory = (username, roomnum, privacy) => {
@@ -130,28 +120,12 @@ const leavegame = socket => {
 			sessions[i].emit('loginsuccess', { username: i });
 			sessions[i].emit('notification', `Game admin ${game.admin} left the game.`);
 		});
-		for (let i = 0; i < games.length; i++) {
-			if (games[i] == game) {
-				games.splice(i, 1);
-			}
-		}
+		games.splice(games.indexOf(game), 1);
 	}
 	else {
-		for (let i = 0; i < game.inbound.length; i++) {
-			if (game.inbound[i] == username) {
-				game.inbound.splice(i, 1);
-			}
-		}
-		for (let i = 0; i < game.team1.length; i++) {
-			if (game.team1[i] == username) {
-				game.team1.splice(i, 1);
-			}
-		}
-		for (let i = 0; i < game.team2.length; i++) {
-			if (game.team2[i] == username) {
-				game.team2.splice(i, 1);
-			}
-		}
+		game.inbound.splice(game.inbound.indexOf(username), 1);
+		game.team1.splice(game.team1.indexOf(username), 1);
+		game.team2.splice(game.team2.indexOf(username), 1);
 
 		game.inbound.concat(game.team1, game.team2).forEach(i=>{
 			sessions[i].emit('gameupdate', game);
@@ -188,8 +162,7 @@ const resetgame = socket => {
 
 //void
 const creategame = (socket, data) => {
-	if (checkifadmin(socket))
-		return;
+	if (checkifadmin(socket)) return;
 	const username = getusername(socket);
 	if (!username) return;
 	if (checkroomnumexists(data.room)) {
