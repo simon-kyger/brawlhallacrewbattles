@@ -309,10 +309,10 @@ const register = (socket, db, data) => {
 const stockchange = (socket, data) => {
 	if (!checkifadmin(socket))
 		return;
-	let user = getusername(socket);
 	let game = findgamebysocket(socket);
-	if (data.team1stocks !== undefined) game.team1stocks = data.team1stocks;
-	if (data.team2stocks !== undefined) game.team2stocks = data.team2stocks;
+	if (!game) return;
+	if (Number.isInteger(data.team1stocks)) game.team1stocks = data.team1stocks;
+	if (Number.isInteger(data.team2stocks)) game.team2stocks = data.team2stocks;
 	game.inbound.concat(game.team1, game.team2).forEach(i=>{
 		sessions[i].emit('stockchange', {
 			team1: game.team1stocks,
