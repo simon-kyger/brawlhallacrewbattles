@@ -47,7 +47,7 @@ mongo.connect(dburl, (err, database) => {
 const getusername = socket => Object.keys(sessions).find(key => sessions[key] === socket)
 
 //returns boolean
-var checkroomnumexists = roomnumber => Boolean(games.find(game=> game.room === roomnumber))
+const checkroomnumexists = roomnumber => Boolean(games.find(game=> game.room === roomnumber))
 
 //returns boolean
 const checkifadmin = socket => Boolean(games.find(game=> game.admin === getusername(socket)))
