@@ -86,6 +86,23 @@ const findgamebyid = args => {
 	}
 }
 
+//generates a game object
+const gamefactory = (username, roomnum, privacy) => {
+	return {
+		admin: username,
+		captains: [],
+		team1: [],
+		team1stocks: 10,
+		inbound: [username],
+		team2: [],
+		team2stocks: 10,
+		phase: false,
+		picking: username,
+		room: roomnum,
+		priv: (privacy) ? true : false
+	};
+}
+
 //void
 const joingame = (socket, data) => {
 	let username = getusername(socket);
@@ -195,28 +212,20 @@ const resetgame = socket => {
 	let game = findgamebysocket(socket);
 	let username = getusername(socket);
 	if (!game || !username) return;
-	if (game.admin !== username)
-		return;
-	const ngame = {
-		admin: username,
-		captains: [],
-		team1: [],
-		team1stocks: 10,
-		inbound: [],
-		team2: [],
-		team2stocks: 10,
-		phase: false,
-		picking: username,
-		room: game.room
-	};
+	if (game.admin !== username) return;
+
+	const ngame = gamefactory(username, game.room, game.priv);
 	for (let i = 0; i < game.team1.length; i++) {
-		ngame.inbound.push(game.team1[i]);
+		if (game.team1[i] !== game.admin)
+			ngame.inbound.push(game.team1[i]);
 	}
 	for (let i = 0; i < game.team2.length; i++) {
-		ngame.inbound.push(game.team2[i]);
+		if (game.team2[i] !== game.admin)
+			ngame.inbound.push(game.team2[i]);
 	}
 	for (let i = 0; i < game.inbound.length; i++) {
-		ngame.inbound.push(game.inbound[i]);
+		if (game.inbound[i] !== game.admin)
+			ngame.inbound.push(game.inbound[i]);
 	}
 
 	for (let i = 0; i < games.length; i++) {
@@ -240,19 +249,7 @@ const creategame = (socket, data) => {
 		socket.emit('verif', { msg: "A crew battle already uses this room number." });
 		return;
 	}
-	const game = {
-		admin: username,
-		captains: [],
-		team1: [],
-		team1stocks: 10,
-		inbound: [username],
-		team2: [],
-		team2stocks: 10,
-		phase: false,
-		picking: username,
-		room: data.room,
-		priv: (data.private) ? true : false
-	};
+	const game = gamefactory(username, data.room, data.priv);
 	games.push(game);
 	socket.emit('joingame', {
 		username: username,
