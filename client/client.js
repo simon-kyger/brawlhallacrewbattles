@@ -182,7 +182,7 @@
 	}
 	document.addEventListener("DOMContentLoaded", rendermain);
 
-	const loginpage = () => {
+	const loginpage = (down) => {
 		let div = document.getElementById("main");
 		div.innerHTML = "";
 		div.style.width = `100%`;
@@ -208,7 +208,7 @@
 											</div>
 											<div class="row">
 												<div class="col">
-													<div id="success"></div>
+													<div id="success">${ down ? `Status: Down for maintenance.` : "Status: Up"}</div>
 												</div>
 											</div>
 										</form>
@@ -237,21 +237,25 @@
 		//TODO: debounce these
 		document.getElementById("loginlink").addEventListener("click", e => {
 			e.preventDefault();
-			const username = document.getElementById("username").value;
-			const password = document.getElementById("password").value;
-			socket.emit("login", {
-				username: username,
-				password: password
-			});
+			if (socket.connected){
+				const username = document.getElementById("username").value;
+				const password = document.getElementById("password").value;
+				socket.emit("login", {
+					username: username,
+					password: password
+				});
+			}
 		})
 		document.getElementById("registerlink").addEventListener("click", e => {
-			e.preventDefault();
-			const username = document.getElementById("username").value;
-			const password = document.getElementById("password").value;
-			socket.emit("register", {
-				username: username,
-				password: password
-			});
+			if (socket.connected){
+				e.preventDefault();
+				const username = document.getElementById("username").value;
+				const password = document.getElementById("password").value;
+				socket.emit("register", {
+					username: username,
+					password: password
+				});
+			}
 		})
 	}
 
@@ -271,7 +275,7 @@
 			document.getElementById("passerror").innerHTML = data.msg;
 		}	
 	});
-	socket.on("loginpage", () => loginpage());
+	socket.on("loginpage", () => loginpage(false));
 	socket.on("loginsuccess", data => gamespage(data));
 
 	const gamespage = data => {
@@ -622,8 +626,21 @@
 		}
 	});
 
-	socket.on("disconnect", function() {
-		loginpage();
+	socket.on("disconnect", ()=> {
+		loginpage(true);
+		const ping = () => {
+			if (socket.connected){
+				socket.emit("reconnect");
+				clearInterval(ping)
+			}
+		}
+		setInterval(ping(), 1000);
 	});
+
+	socket.on('reconnect', ()=>{
+		if (document.getElementById('success')){
+			document.getElementById('success').innerHTML = `Status: Up`;
+		}
+	})
 
 })();

@@ -11,7 +11,7 @@ const sslredirect = require('heroku-ssl-redirect');
 const app = express();
 const server = http.Server(app);
 const io = ioserver(server);
-const serverport = process.env.PORT || 8080;
+const serverport = process.env.PORT || 80;
 const dbport = process.env.DBPORT || 27017;
 const dbname = process.env.DBNAME || config.get('admin.dbconfig.name') || `brawlhallacrewdb`;
 const dburl = process.env.MONGODB_URI || config.get('admin.dbconfig.host') || `mongodb://localhost:${dbport}`;
@@ -39,12 +39,17 @@ mongo.connect(dburl, (err, database) => {
 		socket.on('resetgame', () => resetgame(socket));
 		socket.on('leavegame', () => leavegame(socket));
 		socket.on('stockchange', (data) => stockchange(socket, data));
+		socket.on('reconnect', ()=> reconnect(socket));
 	});
 });
 
 //void
 const init = socket => {
 	socket.emit('loginpage');
+}
+
+const reconnect = socket => {
+	socket.emit('reconnect');
 }
 
 //returns string
@@ -123,15 +128,9 @@ const joingame = (socket, data) => {
 		username: username,
 		game: game,
 	});
-	for (let j = 0; j < game.inbound.length; j++) {
-		sessions[game.inbound[j]].emit('gameupdate', game);
-	}
-	for (let j = 0; j < game.team1.length; j++) {
-		sessions[game.team1[j]].emit('gameupdate', game);
-	}
-	for (let j = 0; j < game.team2.length; j++) {
-		sessions[game.team2[j]].emit('gameupdate', game);
-	}
+	game.inbound.concat(game.team1, game.team2).forEach(i=>{
+		sessions[i].emit('gameupdate', game);
+	})
 }
 
 //returns obj
@@ -159,18 +158,10 @@ const leavegame = socket => {
 	let username = getusername(socket);
 	if (!game || !username) return;
 	if (game.admin == username) {
-		for (let i = 0; i < game.inbound.length; i++) {
-			sessions[game.inbound[i]].emit('loginsuccess', { username: game.inbound[i] });
-			sessions[game.inbound[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
-		for (let i = 0; i < game.team1.length; i++) {
-			sessions[game.team1[i]].emit('loginsuccess', { username: game.team1[i] });
-			sessions[game.team1[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
-		for (let i = 0; i < game.team2.length; i++) {
-			sessions[game.team2[i]].emit('loginsuccess', { username: game.team2[i] });
-			sessions[game.team2[i]].emit('notification', `Game admin ${game.admin} left the game.`);
-		}
+		game.inbound.concat(game.team1, game.team2).forEach(i=>{
+			sessions[i].emit('loginsuccess', { username: i });
+			sessions[i].emit('notification', `Game admin ${game.admin} left the game.`);
+		});
 		for (let i = 0; i < games.length; i++) {
 			if (games[i] == game) {
 				games.splice(i, 1);
@@ -193,15 +184,10 @@ const leavegame = socket => {
 				game.team2.splice(i, 1);
 			}
 		}
-		for (let j = 0; j < game.inbound.length; j++) {
-			sessions[game.inbound[j]].emit('gameupdate', game);
-		}
-		for (let j = 0; j < game.team1.length; j++) {
-			sessions[game.team1[j]].emit('gameupdate', game);
-		}
-		for (let j = 0; j < game.team2.length; j++) {
-			sessions[game.team2[j]].emit('gameupdate', game);
-		}
+		game.inbound.concat(game.team1, game.team2).forEach(i=>{
+			sessions[i].emit('gameupdate', game);
+		});
+
 		socket.emit('loginsuccess', { username: username });
 	}
 	io.sockets.emit('gamesupdate', games);
@@ -215,18 +201,10 @@ const resetgame = socket => {
 	if (game.admin !== username) return;
 
 	const ngame = gamefactory(username, game.room, game.priv);
-	for (let i = 0; i < game.team1.length; i++) {
-		if (game.team1[i] !== game.admin)
-			ngame.inbound.push(game.team1[i]);
-	}
-	for (let i = 0; i < game.team2.length; i++) {
-		if (game.team2[i] !== game.admin)
-			ngame.inbound.push(game.team2[i]);
-	}
-	for (let i = 0; i < game.inbound.length; i++) {
-		if (game.inbound[i] !== game.admin)
-			ngame.inbound.push(game.inbound[i]);
-	}
+	game.inbound.concat(game.team1, game.team2).forEach(i=>{
+		if(i !== game.admin)
+			ngame.inbound.push(i)
+	})
 
 	for (let i = 0; i < games.length; i++) {
 		if (games[i].admin == username) {
@@ -299,7 +277,7 @@ const login = (socket, db, data) => {
 	users.findOne({ username: query.username }).then(res => {
 		if (!res) {
 			socket.emit('usercreated', {
-				msg: `Unknown user.`
+				msg: `Incorrect username and or password.`
 			});
 			return;
 		}
@@ -330,7 +308,7 @@ const login = (socket, db, data) => {
 			}
 			else {
 				socket.emit('usercreated', {
-					msg: `Bad password.`
+					msg: `Incorrect username and or password.`
 				});
 			}
 		})
@@ -393,24 +371,12 @@ const stockchange = (socket, data) => {
 	let game = findgamebysocket(socket);
 	if (data.team1stocks !== undefined) game.team1stocks = data.team1stocks;
 	if (data.team2stocks !== undefined) game.team2stocks = data.team2stocks;
-	for (let i = 0; i < game.inbound.length; i++) {
-		sessions[game.inbound[i]].emit('stockchange', {
+	game.inbound.concat(game.team1, game.team2).forEach(i=>{
+		sessions[i].emit('stockchange', {
 			team1: game.team1stocks,
 			team2: game.team2stocks
-		})
-	}
-	for (let i = 0; i < game.team1.length; i++) {
-		sessions[game.team1[i]].emit('stockchange', {
-			team1: game.team1stocks,
-			team2: game.team2stocks
-		})
-	}
-	for (let i = 0; i < game.team2.length; i++) {
-		sessions[game.team2[i]].emit('stockchange', {
-			team1: game.team1stocks,
-			team2: game.team2stocks
-		})
-	}
+		});
+	});
 }
 
 //void
@@ -495,13 +461,7 @@ const updategame = (socket, data) => {
 		game.phase = true;
 		game.picking = game.captains[0];
 	}
-	for (let i = 0; i < game.team1.length; i++) {
-		sessions[game.team1[i]].emit('gameupdate', game);
-	}
-	for (let i = 0; i < game.team2.length; i++) {
-		sessions[game.team2[i]].emit('gameupdate', game);
-	}
-	for (let i = 0; i < game.inbound.length; i++) {
-		sessions[game.inbound[i]].emit('gameupdate', game);
-	}
+	game.inbound.concat(game.team1, game.team2).forEach(i=>{
+		sessions[i].emit('gameupdate', game)
+	});
 }
