@@ -519,7 +519,7 @@
 				});
 			});
 			document.getElementById("removestockt1").addEventListener("click", e => {
-				if(parseInt(document.getElementById("t1stocks").innerHTML) <= 1){
+				if(parseInt(document.getElementById("t1stocks").innerHTML) <= 0){
 					if(!document.getElementById("t1stocks").classList.contains('text-danger')){
 						document.getElementById("t1stocks").classList.add('text-danger');
 					}
@@ -530,7 +530,7 @@
 				}
 			});
 			document.getElementById("removestockt2").addEventListener("click", e => {
-				if(parseInt(document.getElementById("t2stocks").innerHTML) <= 1){
+				if(parseInt(document.getElementById("t2stocks").innerHTML) <= 0){
 						if(!document.getElementById("t2stocks").classList.contains('text-danger')){
 						document.getElementById("t2stocks").classList.add('text-danger');
 					}

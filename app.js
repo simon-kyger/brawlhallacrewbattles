@@ -207,6 +207,7 @@ const resetgame = socket => {
 		team2stocks: 10,
 		phase: false,
 		picking: username,
+		room: game.room
 	};
 	for (let i = 0; i < game.team1.length; i++) {
 		ngame.inbound.push(game.team1[i]);
@@ -249,8 +250,8 @@ const creategame = (socket, data) => {
 		team2stocks: 10,
 		phase: false,
 		picking: username,
-		priv: (data.private) ? true : false,
-		room: data.room
+		room: data.room,
+		priv: (data.private) ? true : false
 	};
 	games.push(game);
 	socket.emit('joingame', {
