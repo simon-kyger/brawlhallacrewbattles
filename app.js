@@ -58,37 +58,23 @@ const getusername = socket => {
 }
 
 //returns boolean
-const checkroomnumexists = roomnumber => {
-	for (let i = 0; i < games.length; i++) {
-		let game = games[i];
-		if (game.room == roomnumber) {
-			return true
-		}
-	}
-	return false;
+var checkroomnumexists = roomnumber => {
+	return Boolean(games.find(game=> game.room === roomnumber))
 }
 
 //returns boolean
 const checkifadmin = socket => {
-	let username = getusername(socket);
-	if (!username) return false;
-	for (let i = 0; i < games.length; i++) {
-		let game = games[i];
-		if (game.admin == username) {
-			return true;
-		}
-	}
-	return false;
+	return Boolean(games.find(game=> game.admin === getusername(socket)))
 }
 
 //returns game
 const findgamebyid = args => {
-	for (let i=0; i<games.length; i++){
-		let game = games[i];
-		if (game.room == args){
-			return game;
-		}
-	}
+	return games.find(game=> game.room === args)
+}
+
+//returns obj
+const findgamebysocket = socket => {
+	return games.find(game => game.inbound.concat(game.team1, game.team2).some(user => user === getusername(socket)));
 }
 
 //generates a game object
@@ -133,25 +119,6 @@ const joingame = (socket, data) => {
 	})
 }
 
-//returns obj
-const findgamebysocket = socket => {
-	for (let i = 0; i < games.length; i++) {
-		let game = games[i];
-		for (let j = 0; j < game.team1.length; j++) {
-			if (game.team1[j] == getusername(socket))
-				return game;
-		}
-		for (let j = 0; j < game.team2.length; j++) {
-			if (game.team2[j] == getusername(socket))
-				return game;
-		}
-		for (let j = 0; j < game.inbound.length; j++) {
-			if (game.inbound[j] == getusername(socket))
-				return game;
-		}
-	}
-}
-
 //void
 const leavegame = socket => {
 	let game = findgamebysocket(socket);
@@ -184,6 +151,7 @@ const leavegame = socket => {
 				game.team2.splice(i, 1);
 			}
 		}
+
 		game.inbound.concat(game.team1, game.team2).forEach(i=>{
 			sessions[i].emit('gameupdate', game);
 		});
