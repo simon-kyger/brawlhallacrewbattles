@@ -336,15 +336,18 @@ const stockchange = (socket, data) => {
 const updategame = (socket, data) => {
 	let game = findgamebysocket(socket);
 	let username = getusername(socket);
-	if (!game || !username) return; 
+	if (!game || !username) return;
 
-	//captains or admins pick
-	if (data.fromcontainer == 'team1') game.team1.splice(game.team1.indexOf(data.player), 1);
-	if (data.fromcontainer == 'team2') game.team2.splice(game.team2.indexOf(data.player), 1);
-	if (data.fromcontainer == 'inbound') game.inbound.splice(game.inbound.indexOf(data.player), 1);
-	if (data.tocontainer == 'team1') game.team1.push(data.player);
-	if (data.tocontainer == 'team2') game.team2.push(data.player);
-	if (data.tocontainer == 'inbound') game.inbound.push(data.player);
+	//validations of data
+	let reg = /^(team1|team2|inbound|)$/;
+	if (!reg.test(data.fromcontainer)) return;
+	if (!reg.test(data.tocontainer)) return;
+	if (game[data.tocontainer].find(i=> i === data.player)) return;
+	if (!game[data.fromcontainer].find(i=> i === data.player)) return;
+
+	//game logic
+	game[data.fromcontainer].splice(game[data.fromcontainer].indexOf(data.player), 1);
+	game[data.tocontainer].push(data.player);
 
 	if (game.team1.length && game.team2.length && !game.phase) {
 		game.captains[0] = game.team1[0];
