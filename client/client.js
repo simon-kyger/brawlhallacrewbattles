@@ -493,7 +493,7 @@
 							</div>
 							<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; max-height: 300px; max-width: 1600px; border: 1px solid #32383e;">
 								<div id="team1" class="col" style='overflow-y: auto;padding:0;'></div>
-								<div id="inbound" class="col" style="overflow-y: auto;max-height:300; padding:0;"></div>
+								<div id="inbound" class="col" style="overflow-y: auto;padding:0; border-left: 1px solid #32383e; border-right: 1px solid #32383e;"></div>
 								<div id="team2" class="col" style='overflow-y: auto;padding:0';></div>
 							</div>
 							<div class="row"></div>
@@ -615,6 +615,10 @@
 				accept: '.draggable',
 				drop: function(event, ui){
 					$(this).css('border', 'none')
+					$('#inbound').css({
+						'border-left': '1px solid #32383e', 
+						'border-right': '1px solid #32383e'
+					});
 					let self = this;
 					userselected = {
 						player: ui.draggable[0].textContent,
@@ -631,6 +635,7 @@
 					$(this).css('border', 'none')
 				}
 			})
+
 
 			document.getElementById("moveright").addEventListener("click", e => {
 				if (!userselected.player) 
