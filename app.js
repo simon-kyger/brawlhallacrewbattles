@@ -69,7 +69,6 @@ const gamefactory = (username, roomnum, privacy) => {
 		team2: [],
 		team2stocks: 10,
 		phase: false,
-		picking: username,
 		room: roomnum,
 		priv: (privacy) ? true : false
 	};
@@ -127,6 +126,10 @@ const leavegame = socket => {
 		if (game.inbound.indexOf(username) !== -1) game.inbound.splice(game.inbound.indexOf(username), 1);
 		if (game.team1.indexOf(username) !== -1) game.team1.splice(game.team1.indexOf(username), 1);
 		if (game.team2.indexOf(username) !== -1) game.team2.splice(game.team2.indexOf(username), 1);
+
+		game.team1.length ? game.captains[0] = game.team1[0] : game.captains[0] = '';
+		game.team2.length ? game.captains[1] = game.team2[0] : game.captains[1] = '';
+		(game.team1.length && game.team2.length) ? game.phase = true : game.phase = false;
 
 		game.inbound.concat(game.team1, game.team2).forEach(i=>{
 			sessions[i].emit('gameupdate', game);
@@ -346,15 +349,30 @@ const updategame = (socket, data) => {
 	if (!game[data.fromcontainer].find(i=> i === data.player)) return;
 
 	//game logic
-	game[data.fromcontainer].splice(game[data.fromcontainer].indexOf(data.player), 1);
-	game[data.tocontainer].push(data.player);
-
-	if (game.team1.length && game.team2.length && !game.phase) {
-		game.captains[0] = game.team1[0];
-		game.captains[1] = game.team2[0];
-		game.phase = true;
-		game.picking = game.captains[0];
+	
+	if (username == game.admin){
+		game[data.fromcontainer].splice(game[data.fromcontainer].indexOf(data.player), 1);
+		game[data.tocontainer].push(data.player);
+	} else if ((game.phase) && (username == game.captains[0] || username == game.captains[1])){
+		if (username == game.captains[0]){
+			if (data.tocontainer == 'team2' || data.fromcontainer == 'team2')
+				return;
+		}
+		if (username == game.captains[1]){
+			if (data.tocontainer == 'team1' || data.fromcontainer == 'team1')
+				return;
+		}
+		game[data.fromcontainer].splice(game[data.fromcontainer].indexOf(data.player), 1);
+		game[data.tocontainer].push(data.player);
+	} else {
+		return;
 	}
+
+	game.team1.length ? game.captains[0] = game.team1[0] : game.captains[0] = '';
+	game.team2.length ? game.captains[1] = game.team2[0] : game.captains[1] = '';
+
+	(game.team1.length && game.team2.length) ? game.phase = true : game.phase = false;
+
 	game.inbound.concat(game.team1, game.team2).forEach(i=>{
 		sessions[i].emit('gameupdate', game)
 	});

@@ -29,7 +29,6 @@ node app.js
 ##### Launch server with inspector in chrome
 ```
 node --inspect app.js
-
 ```
 
 ##### Launch server with all socketio messages

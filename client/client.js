@@ -454,11 +454,7 @@
 								<span>Captains: &nbsp;</span>
 								<span id="captains"></span>
 							</div>
-							<div class="row" style="font-size:20;">
-								<span>Currently picking: &nbsp;</span>
-								<span id="picking"></span>
-							</div>
-							<div class="row">
+							<div class="row" id='moveleftright'>
 								<div class="col"></div>
 								<div class="col">
 									<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
@@ -522,20 +518,20 @@
 						document.getElementById("t1stocks").classList.add('text-danger');
 					}
 				} else {
-				socket.emit("stockchange", {
-					team1stocks: parseInt(document.getElementById("t1stocks").innerHTML) - 1
-				});
+					socket.emit("stockchange", {
+						team1stocks: parseInt(document.getElementById("t1stocks").innerHTML) - 1
+					});
 				}
 			});
 			document.getElementById("removestockt2").addEventListener("click", e => {
 				if(parseInt(document.getElementById("t2stocks").innerHTML) <= 0){
-						if(!document.getElementById("t2stocks").classList.contains('text-danger')){
+					if(!document.getElementById("t2stocks").classList.contains('text-danger')){
 						document.getElementById("t2stocks").classList.add('text-danger');
 					}
 				} else {
-				socket.emit("stockchange", {
-					team2stocks: parseInt(document.getElementById("t2stocks").innerHTML) - 1
-				});
+					socket.emit("stockchange", {
+						team2stocks: parseInt(document.getElementById("t2stocks").innerHTML) - 1
+					});
 				}
 			});
 		}
@@ -546,6 +542,32 @@
 		}
 		document.getElementById("leavegame").addEventListener("click", e => {
 			socket.emit("leavegame");
+		});
+		document.getElementById("moveright").addEventListener("click", e=>{
+			let userselected = {
+				player: document.getElementById('moveleftright').getAttribute('player'),
+				fromcontainer: document.getElementById('moveleftright').getAttribute('container')
+			}
+			if (!userselected.player || !userselected.fromcontainer) 
+				return;
+			if (userselected.fromcontainer == 'team2') 
+				return;
+			userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team2' : userselected.tocontainer = 'inbound';
+			document.getElementById('moveleftright').setAttribute('container', userselected.tocontainer)
+			socket.emit("updategame", userselected);
+		});
+		document.getElementById("moveleft").addEventListener("click", e=>{
+			let userselected = {
+				player: document.getElementById('moveleftright').getAttribute('player'),
+				fromcontainer: document.getElementById('moveleftright').getAttribute('container')
+			}
+			if (!userselected.player || !userselected.fromcontainer) 
+				return;
+			if (userselected.fromcontainer == 'team1') 
+				return;
+			userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team1' : userselected.tocontainer = 'inbound';
+			document.getElementById('moveleftright').setAttribute('container', userselected.tocontainer)
+			socket.emit("updategame", userselected);
 		});
 	}
 
@@ -559,17 +581,8 @@
 	socket.on("gameupdate", data => {
 		if (document.getElementById("game")) {
 			document.getElementById("admin").innerHTML = data.admin;
-			document.getElementById("picking").innerHTML = data.picking;
 			let numPlayers = data.inbound.length + data.team1.length + data.team2.length;
 			document.getElementById('numUsers').innerHTML = (numPlayers > 1) ? numPlayers+ " players" : numPlayers + " player";
-
-			setInterval(() => {
-				$("#picking").animate({
-					opacity: 1.0
-				}, 500).animate({
-					opacity: .2
-				});
-			}, 1000);
 
 			document.getElementById("captains").innerHTML = "";
 			for (let i = 0; i < data.captains.length; i++) {
@@ -587,15 +600,14 @@
 			for (let i = 0; i < data.team2.length; i++) {
 				document.getElementById("team2").innerHTML += `<span class="uclick draggable brawlplayer">${data.team2[i]}</span>`;
 			}
-			let userselected = {};
+
 			let clickers = document.getElementsByClassName("uclick");
+
 			for (let i = 0; i < clickers.length; i++) {
-				clickers[i].addEventListener("click", e => {
-					userselected = {
-						player: e.target.textContent,
-						fromcontainer: e.target.parentElement.id
-					};
-				});
+				clickers[i].addEventListener("click", e=>{
+					document.getElementById('moveleftright').setAttribute('player', e.target.textContent)
+					document.getElementById('moveleftright').setAttribute('container', e.target.parentElement.id)
+				})
 			}
 
 			$('.uclick').draggable({ 
@@ -635,26 +647,6 @@
 					$(this).css('border', 'none')
 				}
 			})
-
-
-			document.getElementById("moveright").addEventListener("click", e => {
-				if (!userselected.player) 
-					return;
-				if (userselected.fromcontainer == 'team2') 
-					return;
-				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team2' : userselected.tocontainer = 'inbound';
-				socket.emit("updategame", userselected);
-				userselected = {};
-			});
-			document.getElementById("moveleft").addEventListener("click", e => {
-				if (!userselected.player) 
-					return;
-				if (userselected.fromcontainer == 'team1') 
-					return;
-				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team1' : userselected.tocontainer = 'inbound';
-				socket.emit("updategame", userselected);
-				userselected = {};
-			});
 		}
 	});
 
