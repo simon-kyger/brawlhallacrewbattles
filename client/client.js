@@ -174,7 +174,6 @@
 		document.body.style.color = `white`;
 		document.body.style.fontSize = `40`;
 		document.body.style.minheight = `100vh`;
-
 		let div = document.createElement(`div`);
 		document.body.appendChild(div);
 		div.id = `main`;
@@ -323,7 +322,7 @@
 			let reg = /\b\d{5}\b/
 			if(reg.test(pass)){
 				socket.emit('joingame', {
-					priv: pass
+					pass: pass
 				});
 			} else {
 				document.getElementById("passerror").innerHTML = "Enter a valid room number.";
@@ -340,13 +339,13 @@
 
 				if (privacy) {
 					socket.emit('creategame', {
-						room: document.getElementById('room').value,
+						room: room.value,
 						private: true
 					});
 				}
 				else {
 					socket.emit('creategame', {
-						room: document.getElementById('room').value,
+						room: room.value,
 						private: false
 					});
 				}
@@ -431,7 +430,7 @@
 		div.innerHTML = `<div id="game" class="container" align="center" style="text-align: left; min-width:500;">
 							<div id="loggedin" style="font-size: 20; position: absolute;">Welcome back ${data.username}</div>
 							${headert()}
-					<div class="row" style="float: right; font-size: 20">
+							<div class="row" style="float: right; font-size: 20">
 								<div class="col">
 									${data.resettable ? renderreset() : ""}
 								</div>
@@ -492,15 +491,10 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-								<div class="col" style="border-bottom: 1px solid white; width: 90%"></div>
-							</div>
-							<div id="allplayers" class="row" style="max-height: 800px; max-width: 1600px; overflow: auto;">
-								<ul id="team1" class="col" style="list-style-type:none;"></ul>
-								<ul id="inbound" class="col" style="list-style-type:none; overflow-x: hidden; overflow-y: auto; max-height:300;"></ul>
-								<ul id="team2" class="col" style="list-style-type:none;"></ul>
+							<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; max-height: 300px; max-width: 1600px; border: 1px solid #32383e;">
+								<div id="team1" class="col" style='overflow-y: auto;padding:0;'></div>
+								<div id="inbound" class="col" style="overflow-y: auto;max-height:300; padding:0;"></div>
+								<div id="team2" class="col" style='overflow-y: auto;padding:0';></div>
 							</div>
 							<div class="row"></div>
 						</div>
@@ -583,44 +577,77 @@
 			}
 			document.getElementById("team1").innerHTML = "";
 			for (let i = 0; i < data.team1.length; i++) {
-				document.getElementById("team1").innerHTML += `<li class="uclick" style="cursor: pointer;">${data.team1[i]}</li>`;
+				document.getElementById("team1").innerHTML += `<span class="uclick draggable brawlplayer">${data.team1[i]}</span>`;
 			}
 			document.getElementById("inbound").innerHTML = "";
 			for (let i = 0; i < data.inbound.length; i++) {
-				document.getElementById("inbound").innerHTML += `<li class="uclick" style="cursor: pointer;">${data.inbound[i]}</li>`;
+				document.getElementById("inbound").innerHTML += `<span class="uclick draggable brawlplayer">${data.inbound[i]}</span>`;
 			}
 			document.getElementById("team2").innerHTML = "";
 			for (let i = 0; i < data.team2.length; i++) {
-				document.getElementById("team2").innerHTML += `<li class="uclick" style="cursor: pointer;">${data.team2[i]}</li>`;
+				document.getElementById("team2").innerHTML += `<span class="uclick draggable brawlplayer">${data.team2[i]}</span>`;
 			}
 			let userselected = {};
 			let clickers = document.getElementsByClassName("uclick");
 			for (let i = 0; i < clickers.length; i++) {
 				clickers[i].addEventListener("click", e => {
 					userselected = {
-						username: e.target.textContent,
-						container: e.target.parentElement.id
+						player: e.target.textContent,
+						fromcontainer: e.target.parentElement.id
 					};
 				});
 			}
+
+			$('.uclick').draggable({ 
+				opacity: 0.7,
+    			helper: 'clone',
+    			scroll: false,
+    			revert: 'invalid',
+    			appendTo: $('#main'),
+				helper: function(e) {
+					let original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
+					return original.clone().css({
+						width: original.width()
+					});                
+				},
+			});
+			$('#team1, #team2, #inbound').droppable({
+				accept: '.draggable',
+				drop: function(event, ui){
+					$(this).css('border', 'none')
+					let self = this;
+					userselected = {
+						player: ui.draggable[0].textContent,
+						tocontainer: self.id,
+						fromcontainer: ui.draggable[0].parentElement.id
+					}
+					socket.emit("updategame", userselected);
+					userselected = {};
+				},
+				over: function(ev, el){
+					$(this).css('border', 'solid 1px #dee2e6');
+				},
+				out: function(ev, el){
+					$(this).css('border', 'none')
+				}
+			})
+
 			document.getElementById("moveright").addEventListener("click", e => {
-				if (!userselected.username)
+				if (!userselected.username) 
 					return;
-				socket.emit("updategame", {
-					selected: userselected.username,
-					container: userselected.container,
-					movement: "right"
-				});
+				if (userselected.fromcontainer == 'team2') 
+					return;
+				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team2' : userselected.tocontainer = 'inbound';
+				socket.emit("updategame", userselected);
 				userselected = {};
 			});
 			document.getElementById("moveleft").addEventListener("click", e => {
-				if (!userselected.username)
+				if (!userselected.username) 
 					return;
-				socket.emit("updategame", {
-					selected: userselected.username,
-					container: userselected.container,
-					movement: "left"
-				});
+				if (userselected.fromcontainer == 'team1') 
+					return;
+				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team1' : userseleted.tocontainer = 'inbound';
+				socket.emit("updategame", userselected);
 				userselected = {};
 			});
 		}

@@ -90,16 +90,17 @@ const joingame = (socket, data) => {
 	let username = getusername(socket);
 	if (!username) return;
 	let game;
-	if (data.priv){
-		game = findgamebyid(data.priv);
-		if (!game){
-			socket.emit('passfailed', { msg: "No room found by that #." });
-			return;
-		}
+	if (data.pass){
+		let reg = /\b\d{5}\b/; // Verify that the room number is 5 digits, \d = [0-9]
+		if (!reg.test(data.pass)) return;
+		game = findgamebyid(data.pass);
 	} else {
 		game = findgamebysocket(sessions[data.selected]);
 	}
-	if (!game) return;
+	if (!game) {
+		socket.emit('passfailed', { msg: "No room found by that #." });
+		return;
+	}
 	game.inbound.push(username);
 	socket.emit('joingame', {
 		username: username,
@@ -123,9 +124,9 @@ const leavegame = socket => {
 		games.splice(games.indexOf(game), 1);
 	}
 	else {
-		game.inbound.splice(game.inbound.indexOf(username), 1);
-		game.team1.splice(game.team1.indexOf(username), 1);
-		game.team2.splice(game.team2.indexOf(username), 1);
+		if (game.inbound.indexOf(username) !== -1) game.inbound.splice(game.inbound.indexOf(username), 1);
+		if (game.team1.indexOf(username) !== -1) game.team1.splice(game.team1.indexOf(username), 1);
+		if (game.team2.indexOf(username) !== -1) game.team2.splice(game.team2.indexOf(username), 1);
 
 		game.inbound.concat(game.team1, game.team2).forEach(i=>{
 			sessions[i].emit('gameupdate', game);
@@ -162,9 +163,13 @@ const resetgame = socket => {
 
 //void
 const creategame = (socket, data) => {
+	let reg = /\b\d{5}\b/; // Verify that the room number is 5 digits, \d = [0-9]
+	if (!reg.test(data.room)) return;
+	
 	if (checkifadmin(socket)) return;
 	const username = getusername(socket);
 	if (!username) return;
+
 	if (checkroomnumexists(data.room)) {
 		socket.emit('verif', { msg: "A crew battle already uses this room number." });
 		return;
@@ -322,81 +327,25 @@ const stockchange = (socket, data) => {
 }
 
 //void
+//data type obj:
+// {
+//		player: usernameoftargetbeingmoved
+// 		tocontainer: containernamemovedto
+// 		fromcontainer: containernamemovedfrom
+// }
 const updategame = (socket, data) => {
 	let game = findgamebysocket(socket);
 	let username = getusername(socket);
-	if (!game || !username) return;
-	//if captains pick
-	if (game.phase) {
-		if ((game.picking !== username) || (data.selected == username) || (data.selected == game.captains[0]) || (data.selected == game.captains[1]))
-			return;
-		if (data.movement == 'left') {
-			if ((data.container == 'team1') || (game.picking == game.captains[1]))
-				return;
-			if ((data.container == 'team2') && (game.picking == game.captains[0]))
-				return;
-			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
-				game.team2.splice(game.team2.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team1.push(data.selected);
-			}
-		}
-		if (data.movement == 'right') {
-			if ((data.container == 'team2') || (game.picking == game.captains[0]))
-				return;
-			if ((data.container == 'team1') && (game.picking == game.captains[1]))
-				return;
-			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
-				game.team1.splice(game.team1.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team2.push(data.selected);
-			}
-		}
+	if (!game || !username) return; 
 
-		if (game.captains.indexOf(username)) {
-			game.picking = game.captains[0];
-		}
-		else {
-			game.picking = game.captains[1];
-		}
-	}
-	else if ((game.admin == username) && !game.phase) {
-		//admin control only
-		if (data.movement == 'left') {
-			if ((data.container == 'team1') || game.team1.length)
-				return;
-			if (data.selected == game.team2[game.team2.indexOf(data.selected)]) {
-				game.team2.splice(game.team2.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team1.push(data.selected);
-			}
-		}
-		if (data.movement == 'right') {
-			if ((data.container == 'team2') || game.team2.length)
-				return;
-			if (data.selected == game.team1[game.team1.indexOf(data.selected)]) {
-				game.team1.splice(game.team1.indexOf(data.selected), 1);
-				game.inbound.push(data.selected);
-			}
-			else {
-				game.inbound.splice(game.inbound.indexOf(data.selected), 1);
-				game.team2.push(data.selected);
-			}
-		}
-	}
-	else {
-		//for anyone trying to move anything that isn't an admin or a captain
-		return;
-	}
+	//captains or admins pick
+	if (data.fromcontainer == 'team1') game.team1.splice(game.team1.indexOf(data.player), 1);
+	if (data.fromcontainer == 'team2') game.team2.splice(game.team2.indexOf(data.player), 1);
+	if (data.fromcontainer == 'inbound') game.inbound.splice(game.inbound.indexOf(data.player), 1);
+	if (data.tocontainer == 'team1') game.team1.push(data.player);
+	if (data.tocontainer == 'team2') game.team2.push(data.player);
+	if (data.tocontainer == 'inbound') game.inbound.push(data.player);
+
 	if (game.team1.length && game.team2.length && !game.phase) {
 		game.captains[0] = game.team1[0];
 		game.captains[1] = game.team2[0];
