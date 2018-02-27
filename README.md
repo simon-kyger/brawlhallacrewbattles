@@ -24,7 +24,19 @@ Example in a command prompt *(exchange PATH with the path to your local reposito
 node app.js
 ```
 
-##### Other notes while launching or configuration for Heroku:
+## Other Helpful Things (Debug / Heroku support)
+
+Launch server with inspector in chrome
+```
+node --inspect app.js
+
+```
+Launch server with all socketio messages
+```
+DEBUG=* node app.js
+```
+
+Configuration for Heroku:
 
 There are 4 process.env values that need to be supplied as follows:
 
