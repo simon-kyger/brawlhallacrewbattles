@@ -633,7 +633,7 @@
 			})
 
 			document.getElementById("moveright").addEventListener("click", e => {
-				if (!userselected.username) 
+				if (!userselected.player) 
 					return;
 				if (userselected.fromcontainer == 'team2') 
 					return;
@@ -642,11 +642,11 @@
 				userselected = {};
 			});
 			document.getElementById("moveleft").addEventListener("click", e => {
-				if (!userselected.username) 
+				if (!userselected.player) 
 					return;
 				if (userselected.fromcontainer == 'team1') 
 					return;
-				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team1' : userseleted.tocontainer = 'inbound';
+				userselected.fromcontainer == 'inbound' ? userselected.tocontainer = 'team1' : userselected.tocontainer = 'inbound';
 				socket.emit("updategame", userselected);
 				userselected = {};
 			});
