@@ -1,3 +1,7 @@
+html {
+  font-size: 20px;
+}
+
 iframe {
   position: fixed;
   top: 0;
@@ -21,14 +25,7 @@ footer div{
 }
 
 .brawlplayer{
-  font-size: 26; 
-  padding: .75rem; 
-  border: 1px solid #32383e; 
-  user-select: none;
-  display:block !important;
-  cursor: pointer; 
-  background-color: #212529;
-  border-color: #32383e;
+  width: 100%;
 }
 
 /* media querys */
@@ -41,6 +38,16 @@ footer div{
   iframe {
     width: 300%; left: -100%;
   }
+}
+
+.uclick {
+  border-color: #32383e;
+  border-radius: 0;
+  background-color: rgba(20, 20, 20, .2);
+}
+
+.uclick.dark {
+  background-color: rgba(40, 40, 40, .5);
 }
 
 /* Sprites */

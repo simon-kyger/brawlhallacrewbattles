@@ -79,7 +79,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-12">
-										<p style="font-size: 1vw;" id="passerror">Insert the private room number</p>
+										<p id="passerror">Insert the private room number</p>
 									</div>
 								</div>
 							</div>
@@ -133,7 +133,7 @@
 								<h4 class="modal-title text-center" id="label" style="margin: 0 auto;">Room settings</h4>
 							</div>
 							<div class="grid">
-								<div class="modal-body" style="font-size: 15px;" id="m-body">
+								<div class="modal-body" id="m-body">
 									<div class="row">
 										<div class="col">
 											<div class="input-group">
@@ -147,8 +147,6 @@
 													<p class="text-danger" id="error"></p>
 												</div>
 											</div>
-										</div>
-										<div class="col">
 											<select id="priv" class="selectpicker form-control" data-live-search="true" title="Privacy">
 												<option>Public</option>
 												<option>Private</option>
@@ -172,7 +170,6 @@
 		document.body.style.margin = 0;
 		document.body.style.background = `black`;
 		document.body.style.color = `white`;
-		document.body.style.fontSize = `40`;
 		document.body.style.minheight = `100vh`;
 		let div = document.createElement(`div`);
 		document.body.appendChild(div);
@@ -191,7 +188,7 @@
 							${headert(true)}
 							<main class='container' style='flex:1;'>
 								<div class='row'>
-									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='font-size: 20; background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
+									<div class='col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4' id='login' align='center' style='background-color: rgba(0,0,0,.4);box-shadow: 0px 0px 150px 20px rgba(0,0,0,.5)'>
 										<form>
 											<div style="text-shadow: 0px 0px 8px rgba(255,255,255,.8)">Username: </div>
 											<input id="username" style="padding-left: 5px;color: white; background-color: rgba(0,0,0,.4); text-shadow: 0px 0px 8px rgba(255,255,255,1);"></input>
@@ -272,7 +269,8 @@
 	socket.on('passfailed', data => {
 		if(document.getElementById("passerror")){
 			document.getElementById("passerror").innerHTML = data.msg;
-		}	
+			document.getElementById("passerror").classList.add("text-danger");
+		}
 	});
 	socket.on("loginpage", () => loginpage(false));
 	socket.on("loginsuccess", data => gamespage(data));
@@ -286,12 +284,12 @@
 								${passwordModal()}
 								<div class="row">
 									<div class="col md-4">
-										<div id="loggedin" style="font-size: 20;">Welcome back ${data.username}</div>
+										<div id="loggedin">Welcome back ${data.username}</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col md-4">
-										<div id="intermediate" style="font-size: 20;"></div>
+										<div id="intermediate"></div>
 									</div>
 								</div>
 								<div class="row">
@@ -301,16 +299,16 @@
 								<div class="row">
 									<div class="col-md-4 col-xs-12">
 										<ul id="createjoin" class="list-group">
-											<li id="creategame" class="list-group-item" style="font-size: 30px;color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
+											<li id="creategame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
 												Create
 											</li>
-											<li id="joingame" class="list-group-item" style="font-size: 30px;color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#pwdModal">
+											<li id="joingame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#pwdModal">
 												Join Private lobby
 											</li>
 										</ul>
 									</div>
 									<div class="col-md-8">
-										<div id="games" style="font-size:20; background-color: black; min-height:400px; width:100%;border: 1px solid white;"></div>
+										<div id="games" style="background-color: black; min-height:400px; width:100%;border: 1px solid white;"></div>
 									</div>
 								</div>
 							</main>
@@ -325,7 +323,7 @@
 					pass: pass
 				});
 			} else {
-				document.getElementById("passerror").innerHTML = "Enter a valid room number.";
+				document.getElementById("passerror").innerHTML = "Enter a valid 5 digit numeric room number.";
 				document.getElementById("passerror").classList.add("text-danger");
 			}
 		});
@@ -352,7 +350,7 @@
 
 			}
 			else {
-				document.getElementById('error').innerHTML = "Please, specify a valid room number.";
+				document.getElementById('error').innerHTML = "Enter a valid 5 digit numeric room number.";
 			}
 		});
 	}
@@ -427,73 +425,83 @@
 		let privacy = (data.game.priv) ? "Private" : "Public";
 		div.style.height = `100%`;
 		div.innerHTML = ``;
-		div.innerHTML = `<div id="game" class="container" align="center" style="text-align: left; min-width:500;">
-							<div id="loggedin" style="font-size: 20; position: absolute;">Welcome back ${data.username}</div>
+		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${headert()}
-							<div class="row" style="float: right; font-size: 20">
-								<div class="col">
-									${data.resettable ? renderreset() : ""}
-								</div>
-								<div class="col">
-									<button id="leavegame" class="btn btn-dark">LeaveGame</button>
-								</div>
-							</div>
-							<div class="row" style="font-size:20;">
-								<span>${privacy} lobby  <span class="badge badge-info" id="numUsers"> 1 player</span></span>
-								
-							</div>
-							<div class="row" style="font-size:20;">
-								<span>Room: &nbsp;</span>
-								<span id="roomNumber">${data.game.room}</span>
-							</div>
-							<div class="row" style="font-size:20;">
-								<span>Admin: &nbsp;</span>
-								<span id="admin">${data.game.admin}</span>
-							</div>
-							<div class="row" style="font-size:20;">
-								<span>Captains: &nbsp;</span>
-								<span id="captains"></span>
-							</div>
-							<div class="row" id='moveleftright'>
-								<div class="col"></div>
-								<div class="col">
-									<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
-								</div>
-								<div class="col"></div>
-								<div class="col">
-									<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
-								</div>
-								<div class="col"></div>
-							</div>
-							<div class="row">
-								<div class="col">
-									<div>Team1</div>
-									<div class="row" style="font-size: 20;">
-										<div class="col">Stocks</div> 
-										<div id="t1stocks" class="col">${data.game.team1stocks}</div>
-										${data.resettable ? renderaddremovestock("t1") : ""}
+							<main id="game" class="container" style="flex:1;">
+								<div class="row">
+									<div class="col">
+										<div class="row">
+											<span id="loggedin">Welcome back ${data.username}</span>
+										</div>
+										<div class="row">
+											<span>${privacy} lobby  <span class="badge badge-info" id="numUsers"> 1 player</span></span>
+										</div>
+										<div class="row">
+											<span>Room: &nbsp;</span>
+											<span id="roomNumber">${data.game.room}</span>
+										</div>
+										<div class="row">
+											<span>Admin: &nbsp;</span>
+											<span id="admin">${data.game.admin}</span>
+										</div>
+										<div class="row">
+											<span>Captains: &nbsp;</span>
+											<span id="captains"></span>
+										</div>
+									</div>
+									<div class="col">
+										<div class="row float-right">
+											<div class="col">
+												${data.resettable ? renderreset() : ""}
+											</div>
+											<div class="col">
+												<button id="leavegame" class="btn btn-dark">LeaveGame</button>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="col">
-									<div>Inbound:</div>
-									<div style="font-size: 20;">&nbsp;</div>
+								<div class="row" id='moveleftright'>
+									<div class="col"></div>
+									<div class="col">
+										<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
+									</div>
+									<div class="col"></div>
+									<div class="col">
+										<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
+									</div>
+									<div class="col"></div>
 								</div>
-								<div class="col">
-									<div>Team2</div>
-									<div class="row" style="font-size: 20;">
-										<div class="col">Stocks</div> 
-										<div id="t2stocks" class="col">${data.game.team2stocks}</div>
-										${data.resettable ? renderaddremovestock("t2") : ""}
+								<div class="row">
+									<div class="col">
+										<div>Team1</div>
+										<div class="row">
+											<div class="col">Stocks</div> 
+											<div id="t1stocks" class="col">${data.game.team1stocks}</div>
+											${data.resettable ? renderaddremovestock("t1") : ""}
+										</div>
+									</div>
+									<div class="col">
+										<div>Inbound:</div>
+										<div>&nbsp;</div>
+									</div>
+									<div class="col">
+										<div>Team2</div>
+										<div class="row">
+											<div class="col">Stocks</div> 
+											<div id="t2stocks" class="col">${data.game.team2stocks}</div>
+											${data.resettable ? renderaddremovestock("t2") : ""}
+										</div>
 									</div>
 								</div>
-							</div>
-							<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; max-height: 300px; max-width: 1600px; border: 1px solid #32383e;">
-								<div id="team1" class="col" style='overflow-y: auto;padding:0;'></div>
-								<div id="inbound" class="col" style="overflow-y: auto;padding:0; border-left: 1px solid #32383e; border-right: 1px solid #32383e;"></div>
-								<div id="team2" class="col" style='overflow-y: auto;padding:0';></div>
-							</div>
-							<div class="row"></div>
-						</div>
+								<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; max-height: 300px; max-width: 1600px; border: 1px solid #32383e;">
+									<div id="team1" class="col" style='overflow-y: auto;padding:0;'></div>
+									<div id="inbound" class="col" style="overflow-y: auto;padding:0; border-left: 1px solid #32383e; border-right: 1px solid #32383e;"></div>
+									<div id="team2" class="col" style='overflow-y: auto;padding:0';></div>
+								</div>
+								<div class="row"></div>
+							</main>
+							${footert()}
+						</wrapper>
 		`;
 		if (document.getElementById("addremovestock")) {
 			document.getElementById("addstockt1").addEventListener("click", e => {
@@ -590,15 +598,21 @@
 			}
 			document.getElementById("team1").innerHTML = "";
 			for (let i = 0; i < data.team1.length; i++) {
-				document.getElementById("team1").innerHTML += `<span class="uclick draggable brawlplayer">${data.team1[i]}</span>`;
+				let c;
+				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
+				document.getElementById("team1").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.team1[i]}</div>`;
 			}
 			document.getElementById("inbound").innerHTML = "";
 			for (let i = 0; i < data.inbound.length; i++) {
-				document.getElementById("inbound").innerHTML += `<span class="uclick draggable brawlplayer">${data.inbound[i]}</span>`;
+				let c;
+				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
+				document.getElementById("inbound").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.inbound[i]}</div>`;
 			}
 			document.getElementById("team2").innerHTML = "";
 			for (let i = 0; i < data.team2.length; i++) {
-				document.getElementById("team2").innerHTML += `<span class="uclick draggable brawlplayer">${data.team2[i]}</span>`;
+				let c;
+				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
+				document.getElementById("team2").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.team2[i]}</div>`;
 			}
 
 			let clickers = document.getElementsByClassName("uclick");
