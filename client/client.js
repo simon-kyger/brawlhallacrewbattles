@@ -26,14 +26,14 @@
 	const footert = () => {
 		return `<footer class='container-fluid w-100' id='footer'>
 					<div class='row'>
-						<div class='col-sm-8 col-md-4' style='white-space:nowrap;'>
+						<div class='col-md-4' style='white-space:nowrap;'>
 							Powered with:
 							<a href="https://nodejs.org/en/" target="_blank"><img src="img/sprite.png" style="margin-left:4;" class="node"></a>
 							<a href="https://socket.io/" target="_blank"><img src="img/sprite.png" class="socketio"></a>
 							<a href="https://www.heroku.com/" target="_blank"><img src="img/sprite.png" class="heroku"></a>
 							<a href="https://www.mongodb.com/" target="_blank"><img src="img/sprite.png" style="position: relative; bottom:4;"  class="mongo"></a>
 						</div>
-						<div class='col-sm-6 col-md-4 text-md-center'>
+						<div class='col-md-4 text-md-center'>
 							<img src='img/sprite.png' class="discord">
 							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
 						</div>
@@ -294,21 +294,21 @@
 								</div>
 								<div class="row">
 									<div class="col"></div>
-									<div class="col-md-8">Active</div>
+									<div class="col-md-8 display-4">Active</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4 col-xs-12">
 										<ul id="createjoin" class="list-group">
-											<li id="creategame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#controlModal">
+											<button id="creategame" class="createjoin btn btn-dark" data-toggle="modal" data-target="#controlModal">
 												Create
-											</li>
-											<li id="joingame" class="list-group-item" style="color: white; background-color: black; padding-left: 30; padding-right: 30; border: 1px solid white; cursor: pointer;" data-toggle="modal" data-target="#pwdModal">
-												Join Private lobby
-											</li>
+											</button>
+											<button id="joingame" class="createjoin btn btn-dark" data-toggle="modal" data-target="#pwdModal">
+												Join Private Lobby
+											</button>
 										</ul>
 									</div>
 									<div class="col-md-8">
-										<div id="games" style="background-color: black; min-height:400px; width:100%;border: 1px solid white;"></div>
+										<div id="games" style="background-color: black; width:100%;border: 1px solid #343a40; height:500px;"></div>
 									</div>
 								</div>
 							</main>
@@ -378,7 +378,7 @@
 			for (let i = 0; i < data.length; i++) {
 				let game = data[i];
 				if(!game.priv){ // Only show if game is public
-					let div = `<div class="ga" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white; background-color: black;">${game.admin}'s Game</div>`;
+					let div = `<div class="ga black" id='usergame${i}' style="cursor: pointer; white-space:pre-wrap; color: white;">${game.admin}'s Game</div>`;
 					document.getElementById("games").innerHTML += div;
 				}
 			}
@@ -395,13 +395,13 @@
 	});
 
 	const renderreset = () => {
-		return `<button id="reset" class="btn btn-dark">Reset Game</button>`;
+		return `<button id="reset" class="black btn btn-dark float-right">Reset Game</button>`;
 	}
 
 	const renderaddremovestock = (team) => {
-		return `<div id="addremovestock" class="col-xs-10 col-md-8 col-lg-6">
-					<button id="addstock${team}" class="btn btn-dark"><i class="fa fa-plus"></i></button>
-					<button id="removestock${team}" class="btn btn-dark"><i class="fa fa-minus"></i></button>
+		return `<div id="addremovestock" class="btn-group" style="display: flex; flex: 1;">
+					<button id="addstock${team}" class="black btn btn-dark" style="flex:1;"><i class="fa fa-plus"></i></button>
+					<button id="removestock${team}" class="black btn btn-dark" style="flex:1;"><i class="fa fa-minus"></i></button>
 				</div>
 		`;
 	}		
@@ -427,7 +427,7 @@
 		div.innerHTML = ``;
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${headert()}
-							<main id="game" class="container" style="flex:1; min-width: 396px;">
+							<main id="game" class="container" style="flex:1; min-width: 440px;">
 								<div class="row">
 									<div class="col">
 										<div class="row">
@@ -455,49 +455,37 @@
 												${data.resettable ? renderreset() : ""}
 											</div>
 											<div class="col">
-												<button id="leavegame" class="btn btn-dark">LeaveGame</button>
+												<button id="leavegame" class="black leave btn btn-dark float-right">LeaveGame</button>
 											</div>
 										</div>
 									</div>
 								</div>
-								<div class="row" id='moveleftright'>
-									<div class="col text-center">
-										<span id="moveleft" class="btn btn-dark fa fa-chevron-left" style="cursor:pointer; user-select:none;"></span>
+								<div class="row" style='display: flex;'>
+									<div class='display-4' style='flex:1;'>Team1</div>
+									<div class='display-4' style='flex:1;'>Inbound</div>
+									<div class='display-4' style='flex:1;'>Team2</div>
+								</div>
+								<div class="row" style="display: flex;">
+									<div style="flex: 1; display: flex;">
+										<div class='stocks'>Stocks: </div>
+										<span id='t1stocks' class='stocks'> ${data.game.team1stocks} </span>
+										${renderaddremovestock("t1")}
 									</div>
-									<div class="col text-center">
-										<span id="moveright" class="btn btn-dark fa fa-chevron-right" style="cursor:pointer; user-select:none;"></span>
+									<div id="moveleftright" class='btn-group' style="flex: 1; display: flex;">
+										<button id="moveleft" class="black btn btn-dark" style='flex:1;'><i class="fa fa-chevron-left"></i></button>
+										<button id="moveright" class="black btn btn-dark" style='flex:1;'><i class="fa fa-chevron-right"></i></button>
+									</div>
+									<div style="flex: 1; display: flex;">
+										<div class='stocks'>Stocks: </div>
+										<span id='t2stocks' class='stocks'> ${data.game.team2stocks} </span>
+										${renderaddremovestock("t2")}
 									</div>
 								</div>
-								<div class="row">
-									<div class="col">
-										<div>Team1</div>
-										<div class="row">
-											<div class="col">
-												Stocks: <span id='t1stocks'> ${data.game.team1stocks} </span>
-											</div>
-											${data.resettable ? renderaddremovestock("t1") : ""}
-										</div>
-									</div>
-									<div class="col">
-										<div>Inbound:</div>
-										<div>&nbsp;</div>
-									</div>
-									<div class="col">
-										<div>Team2</div>
-										<div class="row">
-											<div class="col">
-												Stocks: <span id='t2stocks'> ${data.game.team2stocks} </span>
-											</div>
-											${data.resettable ? renderaddremovestock("t2") : ""}
-										</div>
-									</div>
+								<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; border: 1px solid #32383e;">
+									<ul id="team1" class="col" style='overflow-y: auto;margin:0; padding:0; border: 1px solid #32383e;'></ul>
+									<ul id="inbound" class="col" style="overflow-y: auto;margin:0; padding: 0; border: 1px solid #32383e;"></ul>
+									<ul id="team2" class="col" style='overflow-y: auto;margin:0; padding: 0; border: 1px solid #32383e;'></ul>
 								</div>
-								<div id="allplayers" class="row" style="overflow: visible; min-height: 300px; max-height: 300px; max-width: 1600px; border: 1px solid #32383e;">
-									<div id="team1" class="col" style='overflow-y: auto;padding:0;'></div>
-									<div id="inbound" class="col" style="overflow-y: auto;padding:0; border-left: 1px solid #32383e; border-right: 1px solid #32383e;"></div>
-									<div id="team2" class="col" style='overflow-y: auto;padding:0';></div>
-								</div>
-								<div class="row"></div>
 							</main>
 							${footert()}
 						</wrapper>
@@ -599,19 +587,19 @@
 			for (let i = 0; i < data.team1.length; i++) {
 				let c;
 				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("team1").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.team1[i]}</div>`;
+				document.getElementById("team1").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.team1[i]}</li>`;
 			}
 			document.getElementById("inbound").innerHTML = "";
 			for (let i = 0; i < data.inbound.length; i++) {
 				let c;
 				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("inbound").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.inbound[i]}</div>`;
+				document.getElementById("inbound").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.inbound[i]}</li>`;
 			}
 			document.getElementById("team2").innerHTML = "";
 			for (let i = 0; i < data.team2.length; i++) {
 				let c;
 				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("team2").innerHTML += `<div class="${c} draggable btn btn-dark brawlplayer">${data.team2[i]}</div>`;
+				document.getElementById("team2").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.team2[i]}</li>`;
 			}
 
 			let clickers = document.getElementsByClassName("uclick");
@@ -639,7 +627,7 @@
 			$('#team1, #team2, #inbound').droppable({
 				accept: '.draggable',
 				drop: function(event, ui){
-					$(this).css('border', 'none')
+					$(this).css('border', '1px solid black')
 					$('#inbound').css({
 						'border-left': '1px solid #32383e', 
 						'border-right': '1px solid #32383e'
@@ -654,10 +642,10 @@
 					userselected = {};
 				},
 				over: function(ev, el){
-					$(this).css('border', 'solid 1px #dee2e6');
+					$(this).css('border', '1px solid #dee2e6');
 				},
 				out: function(ev, el){
-					$(this).css('border', 'none')
+					$(this).css('border', '1px solid #32383e')
 				}
 			})
 		}

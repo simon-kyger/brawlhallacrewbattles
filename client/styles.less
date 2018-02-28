@@ -28,6 +28,33 @@ footer div{
   width: 100%;
 }
 
+.uclick {
+  border-color: #32383e;
+  border-radius: 0;
+  background-color: rgba(20, 20, 20, .2);
+}
+
+.uclick.dark {
+  background-color: rgba(40, 40, 40, .5);
+}
+
+.createjoin {
+  background-color: black; 
+  height: 100px; 
+}
+
+.black {
+  background-color: black;
+}
+
+#t1stocks, #t2stocks {
+  padding-right: 10px;
+}
+
+.stocks {
+  padding-left: 10px;
+}
+
 /* media querys */
 @media (min-aspect-ratio: 16/9) {
   iframe {
@@ -40,14 +67,37 @@ footer div{
   }
 }
 
-.uclick {
-  border-color: #32383e;
-  border-radius: 0;
-  background-color: rgba(20, 20, 20, .2);
+@media screen and (max-width: 991px)  {
+  .display-4 {
+    font-size: 50;
+  }
 }
 
-.uclick.dark {
-  background-color: rgba(40, 40, 40, .5);
+@media screen and (max-width: 766px)  {
+  .display-4 {
+    font-size: 40;
+  }
+  #games {
+    height: 250px !important;
+  }
+  .leave {
+    margin-top: 20px;
+  }
+  .stocks {
+    padding: 0 !important;
+  }
+}
+
+@media screen and (max-width: 570px)  {
+  .display-4 {
+    font-size: 30;
+  }
+}
+
+@media screen and (max-width: 535px)  {
+  .stocks {
+    font-size: 12;
+  }
 }
 
 /* Sprites */
