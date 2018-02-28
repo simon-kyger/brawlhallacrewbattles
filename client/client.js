@@ -399,9 +399,9 @@
 	}
 
 	const renderaddremovestock = (team) => {
-		return `<div id="addremovestock" class="col">
-					<button id="addstock${team}" class="btn btn-dark" style="width:40px;height: 40px;"><i class="fa fa-plus"></i></button>
-					<button id="removestock${team}" class="btn btn-dark" style="width:40px;height: 40px;"><i class="fa fa-minus"></i></button>
+		return `<div id="addremovestock" class="col-xs-10 col-md-8 col-lg-6">
+					<button id="addstock${team}" class="btn btn-dark"><i class="fa fa-plus"></i></button>
+					<button id="removestock${team}" class="btn btn-dark"><i class="fa fa-minus"></i></button>
 				</div>
 		`;
 	}		
@@ -427,7 +427,7 @@
 		div.innerHTML = ``;
 		div.innerHTML = `<wrapper class="d-flex flex-column" style="min-height:100vh;">
 							${headert()}
-							<main id="game" class="container" style="flex:1;">
+							<main id="game" class="container" style="flex:1; min-width: 396px;">
 								<div class="row">
 									<div class="col">
 										<div class="row">
@@ -461,22 +461,20 @@
 									</div>
 								</div>
 								<div class="row" id='moveleftright'>
-									<div class="col"></div>
-									<div class="col">
-										<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer;"></span>
+									<div class="col text-center">
+										<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer; font-size: 40px;"></span>
 									</div>
-									<div class="col"></div>
-									<div class="col">
-										<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer;"></span>
+									<div class="col text-center">
+										<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer; font-size: 40px;"></span>
 									</div>
-									<div class="col"></div>
 								</div>
 								<div class="row">
 									<div class="col">
 										<div>Team1</div>
 										<div class="row">
-											<div class="col">Stocks</div> 
-											<div id="t1stocks" class="col">${data.game.team1stocks}</div>
+											<div class="col">
+												Stocks: <span id='t1stocks'> ${data.game.team1stocks} </span>
+											</div>
 											${data.resettable ? renderaddremovestock("t1") : ""}
 										</div>
 									</div>
@@ -487,8 +485,9 @@
 									<div class="col">
 										<div>Team2</div>
 										<div class="row">
-											<div class="col">Stocks</div> 
-											<div id="t2stocks" class="col">${data.game.team2stocks}</div>
+											<div class="col">
+												Stocks: <span id='t2stocks'> ${data.game.team2stocks} </span>
+											</div>
 											${data.resettable ? renderaddremovestock("t2") : ""}
 										</div>
 									</div>
