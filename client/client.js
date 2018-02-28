@@ -462,10 +462,10 @@
 								</div>
 								<div class="row" id='moveleftright'>
 									<div class="col text-center">
-										<span id="moveleft" class="fa fa-chevron-left" style="cursor:pointer; font-size: 40px; user-select:none;"></span>
+										<span id="moveleft" class="btn btn-dark fa fa-chevron-left" style="cursor:pointer; user-select:none;"></span>
 									</div>
 									<div class="col text-center">
-										<span id="moveright" class="fa fa-chevron-right" style="cursor:pointer; font-size: 40px; user-select:none;"></span>
+										<span id="moveright" class="btn btn-dark fa fa-chevron-right" style="cursor:pointer; user-select:none;"></span>
 									</div>
 								</div>
 								<div class="row">
