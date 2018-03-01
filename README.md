@@ -1,6 +1,6 @@
 # Brawlhalla Crew Battles
 
-Hosted @ https://brawlhallacrews.herokuapp.com/
+Hosted @ https://brawlhallacrewbattles.herokuapp.com/
 
 Found a bug? Report it here *please*: https://github.com/simon-kyger/brawlhallacrewbattles/issues
 
