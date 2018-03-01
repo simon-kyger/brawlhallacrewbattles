@@ -137,7 +137,7 @@ const leavegame = socket => {
 
 		socket.emit('loginsuccess', { username: username });
 	}
-	io.sockets.emit('gamesupdate', games);
+	io.sockets.emit('gamesupdate', games.filter(game=> !game.priv));
 }
 
 //void
@@ -184,7 +184,7 @@ const creategame = (socket, data) => {
 		game: game,
 		resettable: true
 	});
-	io.sockets.emit('gamesupdate', games);
+	io.sockets.emit('gamesupdate', games.filter(game=> !game.priv));
 	setTimeout(() => {
 		socket.emit('gameupdate', game)
 	}, 0);
