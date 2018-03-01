@@ -375,10 +375,12 @@
 	socket.on("gamesupdate", data => {
 		if (document.getElementById("games")) {
 			document.getElementById("games").innerHTML = "";
-			data.forEach(i=>{
-				let div = `<div class="ga black" style="cursor: pointer; white-space:pre-wrap; color: white;">${i.admin}'s Game</div>`;
+			for (let i = 0; i < data.length; i++) {
+				let c;
+				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
+				let div = `<div class="${c} ga btn btn-dark brawlplayer">${data[i].admin}'s Game</div>`;
 				document.getElementById("games").innerHTML += div;
-			})
+			}
 			document.querySelectorAll('.ga').forEach((domelem) => {
 				domelem.addEventListener('click', (e) => {
 					let selectedgame = e.target.textContent;
