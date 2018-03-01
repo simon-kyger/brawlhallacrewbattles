@@ -58,6 +58,9 @@ const findgamebyid = args => games.find(game=> game.room === args)
 //returns obj
 const findgamebysocket = socket => games.find(game => game.inbound.concat(game.team1, game.team2).some(user => user === getusername(socket)));
 
+//returns array of objects
+const getpublicgames = () => games.filter(game=> !game.priv);
+
 //generates a game object
 const gamefactory = (username, roomnum, privacy) => {
 	return {
@@ -137,7 +140,7 @@ const leavegame = socket => {
 
 		socket.emit('loginsuccess', { username: username });
 	}
-	io.sockets.emit('gamesupdate', games.filter(game=> !game.priv));
+	io.sockets.emit('gamesupdate', getpublicgames());
 }
 
 //void
@@ -184,7 +187,7 @@ const creategame = (socket, data) => {
 		game: game,
 		resettable: true
 	});
-	io.sockets.emit('gamesupdate', games.filter(game=> !game.priv));
+	io.sockets.emit('gamesupdate', getpublicgames());
 	setTimeout(() => {
 		socket.emit('gameupdate', game)
 	}, 0);
@@ -254,7 +257,7 @@ const login = (socket, db, data) => {
 					wins: res.wins,
 					losses: res.losses
 				});
-				socket.emit('gamesupdate', games);
+				socket.emit('gamesupdate', getpublicgames());
 			}
 			else {
 				socket.emit('usercreated', {
