@@ -1,8 +1,8 @@
-# brawlhallacrewbattle
+# Brawlhalla Crew Battles
 
 Hosted @ https://brawlhallacrews.herokuapp.com/
 
-Found a bug? Report it here *please*: https://github.com/simon-kyger/brawlhallacrewbattle/issues
+Found a bug? Report it here *please*: https://github.com/simon-kyger/brawlhallacrewbattles/issues
 
 ## Getting Started - DB and Server Setup - Windows7/10:
 
@@ -15,7 +15,7 @@ Found a bug? Report it here *please*: https://github.com/simon-kyger/brawlhallac
 Example in a command prompt *(exchange PATH with the path to your local repository of this project, and change 3.6 to the version of your mongod.exe install)*: 
 
 ```
-"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "PATH\brawlhallacrewbattle\data"
+"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --dbpath "PATH\brawlhallacrewbattles\data"
 ```
 
 ##### Launching Node With DB:

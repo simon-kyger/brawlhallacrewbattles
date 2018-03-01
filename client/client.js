@@ -39,7 +39,7 @@
 						</div>
 						<div class='col-md-4 text-md-right'>
 							<a href='https://www.github.com' target='_blank'><img src='img/sprite.png' class="github"></a>
-							<a href='https://github.com/simon-kyger/brawlhallacrewbattle' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattle</a>
+							<a href='https://github.com/simon-kyger/brawlhallacrewbattles' target='_blank'>https://github.com/simon-kyger/brawlhallacrewbattles</a>
 						</div>
 					</div>
 				</footer>
