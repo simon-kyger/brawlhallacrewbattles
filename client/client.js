@@ -460,9 +460,9 @@
 									</div>
 								</div>
 								<div class="row" style='display: flex;'>
-									<div class='display-4' style='flex:1;'>Team1</div>
-									<div class='display-4' style='flex:1;'>Inbound</div>
-									<div class='display-4' style='flex:1;'>Team2</div>
+									<div class='display-4 text-danger text-center' style='flex:1;font-family: "Arial Black"'>Team1</div>
+									<div class='display-4 text-center' style='flex:1;font-family: "Arial Black"'>Inbound</div>
+									<div class='display-4 text-primary text-center' style='flex:1;font-family: "Arial Black"'>Team2</div>
 								</div>
 								<div class="row" style="display: flex;">
 									<div style="flex: 1; display: flex;">
@@ -580,25 +580,31 @@
 
 			document.getElementById("captains").innerHTML = "";
 			for (let i = 0; i < data.captains.length; i++) {
-				document.getElementById("captains").innerHTML += `${data.captains[i]} `;
+				if(i % 2 == 0){
+					if(data.captains[i] !== ""){
+					document.getElementById("captains").innerHTML += `<span class="text-danger">${data.captains[i]}</span>, `;
+					}
+				} else {
+					document.getElementById("captains").innerHTML += `<span class="text-primary">${data.captains[i]}</span> `;
+				}
 			}
 			document.getElementById("team1").innerHTML = "";
 			for (let i = 0; i < data.team1.length; i++) {
 				let c;
-				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("team1").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.team1[i]}</li>`;
+				(i % 2 == 0) ? c='uclick light' : c='uclick dark'; 
+				document.getElementById("team1").innerHTML += `<li class="${c} pteam1 btn draggable brawlplayer">${data.team1[i]}</li>`;
 			}
 			document.getElementById("inbound").innerHTML = "";
 			for (let i = 0; i < data.inbound.length; i++) {
 				let c;
-				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("inbound").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.inbound[i]}</li>`;
+				(i % 2 == 0) ? c='uclick light' : c='uclick dark'; 
+				document.getElementById("inbound").innerHTML += `<li class="${c} pinbound draggable btn brawlplayer">${data.inbound[i]}</li>`;
 			}
 			document.getElementById("team2").innerHTML = "";
 			for (let i = 0; i < data.team2.length; i++) {
 				let c;
-				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				document.getElementById("team2").innerHTML += `<li class="${c} draggable btn btn-dark brawlplayer">${data.team2[i]}</li>`;
+				(i % 2 == 0) ? c='uclick light' : c='uclick dark'; 
+				document.getElementById("team2").innerHTML += `<li class="${c} pteam2 btn draggable brawlplayer">${data.team2[i]}</li>`;
 			}
 
 			let clickers = document.getElementsByClassName("uclick");

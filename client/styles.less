@@ -1,3 +1,7 @@
+@team1color: #C82333;
+@team2color: #0069D9;
+@inboundcolor: #1A1A1A;
+
 html {
   font-size: 20px;
 }
@@ -28,14 +32,41 @@ footer div{
   width: 100%;
 }
 
+#game {
+  font-family: Charcoal
+}
 .uclick {
-  border-color: #32383e;
   border-radius: 0;
-  background-color: rgba(20, 20, 20, .2);
 }
 
-.uclick.dark {
-  background-color: rgba(40, 40, 40, .5);
+.uclick.light.pteam1 {
+  border-color: @team1color;
+  background-color: @team1color;
+}
+
+.uclick.dark.pteam1 {
+  border-color: darken(@team1color, 5%);
+  background-color: darken(@team1color, 5%);
+}
+
+.uclick.light.pteam2 {
+  border-color: @team2color;
+  background-color: @team2color;
+}
+
+.uclick.dark.pteam2 {
+  border-color: darken(@team2color, 5%);
+  background-color: darken(@team2color, 5%);
+}
+
+.uclick.light.pinbound {
+  border-color: @inboundcolor;
+  background-color: @inboundcolor;
+}
+
+.uclick.dark.pinbound {
+  border-color: darken(@inboundcolor, 5%);
+  background-color: darken(@inboundcolor, 5%);
 }
 
 .createjoin {
