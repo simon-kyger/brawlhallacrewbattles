@@ -460,9 +460,9 @@
 									</div>
 								</div>
 								<div class="row" style='display: flex;'>
-									<div class='display-4 text-danger text-center' style='flex:1;'>Team1</div>
-									<div class='display-4 text-center' style='flex:1;'>Inbound</div>
-									<div class='display-4 text-primary text-center' style='flex:1;'>Team2</div>
+									<div class='display-4 text-danger text-center team1head'>Team1</div>
+									<div class='display-4 text-center inboundhead'>Inbound</div>
+									<div class='display-4 text-primary text-center team2head'>Team2</div>
 								</div>
 								<div class="row" style="display: flex;">
 									<div style="flex: 1; display: flex;">
