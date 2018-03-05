@@ -1,5 +1,8 @@
 {
   "name": "brawlhallacrewbattles",
+  "quokka": {
+    "babel": true
+  },
   "version": "1.3.3",
   "description": "Custom Live Brawlhalla Crew Battles!",
   "main": "app.js",
@@ -17,6 +20,7 @@
   },
   "homepage": "https://github.com/simon-kyger/brawlhallacrewbattle#readme",
   "dependencies": {
+    "babel-core": "^6.26.0",
     "bcrypt": "^1.0.3",
     "config": "^1.29.4",
     "express": "^4.16.2",
