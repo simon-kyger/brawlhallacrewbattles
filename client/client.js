@@ -34,8 +34,12 @@
 							<a href="https://www.mongodb.com/" target="_blank"><img src="img/sprite.png" style="position: relative; bottom:4;"  class="mongo"></a>
 						</div>
 						<div class='col-md-4 text-md-center'>
-							<img src='img/sprite.png' class="discord">
-							<a href='https://discord.gg/N2q82hb' target='_blank'>https://discord.gg/N2q82hb</a>
+							<a href='https://discord.gg/N2q82hb' target='_blank'>
+								<img src='img/sprite.png' class="discord">
+							</a>
+							<a href='https://www.twitch.tv/BrawlhallaCrews' target='_blank'>
+								<img src='img/sprite.png' class='twitch'>
+							</a>
 						</div>
 						<div class='col-md-4 text-md-right'>
 							<a href='https://www.github.com' target='_blank'><img src='img/sprite.png' class="github"></a>
