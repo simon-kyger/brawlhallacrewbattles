@@ -187,6 +187,7 @@ const creategame = (socket, data) => {
 		game: game,
 		resettable: true
 	});
+
 	io.sockets.emit('gamesupdate', getpublicgames());
 	setTimeout(() => {
 		socket.emit('gameupdate', game)
