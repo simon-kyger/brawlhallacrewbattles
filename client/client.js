@@ -49,7 +49,6 @@
 				</footer>
 		`;
 	}
-
 	const loginvid = () => {
 		let vidids = [
 			`nNF9cPPSwUQ?`, //pugsy wilson
@@ -382,13 +381,14 @@
 			for (let i = 0; i < data.length; i++) {
 				let c;
 				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				let div = `<div class="${c} ga btn btn-dark brawlplayer">${data[i].admin}'s Game</div>`;
+				let div = `<div class="${c} ga btn btn-dark brawlplayer">${data[i].admin}'s Game<div class="pga"><i class="fas fa-user"></i> ${data[i].players}</div></div>`;
 				document.getElementById("games").innerHTML += div;
 			}
 			document.querySelectorAll('.ga').forEach((domelem) => {
 				domelem.addEventListener('click', (e) => {
-					let selectedgame = e.target.textContent;
-					selectedgame = selectedgame.substring(0, selectedgame.length - 7);
+					let selectedgame = e.target;
+					let rest = selectedgame.children[0].textContent.length; // Thinking about making it live-update...
+					selectedgame = selectedgame.textContent.substring(0, selectedgame.textContent.length - (7 + rest));
 					socket.emit("joingame", {
 						selected: selectedgame
 					});
