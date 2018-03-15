@@ -4,3 +4,4 @@ data/
 config/production.json
 brawlhallacrewbattles.csr
 brawlhallacrewbattles.key
+.vscode/settings.json

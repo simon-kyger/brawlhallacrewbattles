@@ -381,7 +381,7 @@
 			for (let i = 0; i < data.length; i++) {
 				let c;
 				(i % 2 == 0) ? c='uclick' : c='uclick dark'; 
-				let div = `<div class="${c} ga btn btn-dark brawlplayer">${data[i].admin}'s Game<div class="pga"><i class="fas fa-user"></i> ${data[i].players}</div></div>`;
+				let div = `<div class="${c} ga btn btn-dark brawlplayer">${data[i].admin}'s Game<div class="pga"><i class="fas fa-user"></i> ${data[i].inbound.concat(data[i].team1,data[i].team2).length}</div></div>`;
 				document.getElementById("games").innerHTML += div;
 			}
 			document.querySelectorAll('.ga').forEach((domelem) => {
