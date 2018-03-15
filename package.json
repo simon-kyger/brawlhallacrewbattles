@@ -3,7 +3,7 @@
   "quokka": {
     "babel": true
   },
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Custom Live Brawlhalla Crew Battles!",
   "main": "app.js",
   "scripts": {
